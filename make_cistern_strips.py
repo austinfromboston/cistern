@@ -64,25 +64,32 @@ class LedStrip(object):
         return [(x, y, z + (i*z_increment)) for i in range(self.length)]
 
 class FloodStrip(object):
-    def __init__(self, name, length):
+    def __init__(self, name, length, radius):
         self.name = name
         self.length = length
+        self.r = radius
+        self.z = -10 #keeping all the floods in -z for convenience
 
-    def ellipse(self):
+    def points(self):
+        #ellipse version
         theta = 0 # angle that will be increased each loop
         h = 12    # x coordinate of circle center
         k = 10    # y coordinate of circle center
-        step = 15 # amount to add to theta each time (degrees)
+        step = math.pi/self.length
 
-        repeat until theta >= 360;
-            { x = h + r*cos(theta)
-              y = k + r*sin(theta)
-              draw a line to x,y
-              add step to theta
-            }
+        points = []
+        for ii in range(self.length):
+            # print('ii :',ii)
+            # print('theta :', ii*step)
+            theta += ii*step
+            x = h + self.r * math.cos(theta)
+            y = k + self.r * math.sin(theta)
+            z = self.z
+            points.append((x,y,z))
 
-    def points(self):
-        
+        #TODO: translate these points in the same way as the others so they're centered
+        return points
+
 
 # stage left wall
 alpha = LedStrip('alpha', (0,76,0), None)
@@ -116,7 +123,7 @@ tango = LedStrip('tango', (CISTERN_WIDTH,76,CISTERN_HEIGHT), sierra)
 
 # bowl
 
-umbrella = FloodStrip('umbrella', 12)
+umbrella = FloodStrip('umbrella', 12, 96)
 
 
 #in inches
@@ -140,7 +147,7 @@ strips = [
         foxtrot, golf, hotel, india, juliett,
         kilo, lima, mike, november, oscar,
         papa, quebec, romeo, sierra, tango,
-        ]
+        umbrella]
 points = []
 
 for strip in strips:
