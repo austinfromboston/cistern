@@ -46,6 +46,8 @@ INCHES_PER_LED = METERS_PER_LED / IN_TO_M
 CISTERN_HEIGHT = 96
 CISTERN_WIDTH = 192
 CISTERN_CENTER = CISTERN_WIDTH / 2
+CISTERN_DEPTH = 76
+CISTERN_DEPTH_C = CISTERN_DEPTH / 2
 LEDS_PER_UPRIGHT = int(math.floor(CISTERN_HEIGHT / LEDS_PER_IN))
 
 class LedStrip(object):
@@ -64,25 +66,29 @@ class LedStrip(object):
         return [(x, y, z + (i*z_increment)) for i in range(self.length)]
 
 class FloodStrip(object):
-    def __init__(self, name, length):
+    def __init__(self, name, length, radius):
         self.name = name
         self.length = length
-
-    def ellipse(self):
-        theta = 0 # angle that will be increased each loop
-        h = 12    # x coordinate of circle center
-        k = 10    # y coordinate of circle center
-        step = 15 # amount to add to theta each time (degrees)
-
-        repeat until theta >= 360;
-            { x = h + r*cos(theta)
-              y = k + r*sin(theta)
-              draw a line to x,y
-              add step to theta
-            }
+        self.r = radius
+        self.z = -1 #keeping all the floods in -z for convenience
 
     def points(self):
-        
+        #ellipse version
+        theta = 0 # angle that will be increased each loop in radiand
+        step = (2*math.pi)/self.length
+
+        points = []
+        for ii in range(1, self.length+1):
+            #print('ii :',ii)
+            #print('theta :', ii*step)
+            x = self.r * math.cos(theta)
+            y = self.r * math.sin(theta)
+            z = self.z
+            points.append((x,y,z))
+            theta += step
+
+        return points
+
 
 # stage left wall
 alpha = LedStrip('alpha', (0,76,0), None)
@@ -116,7 +122,7 @@ tango = LedStrip('tango', (CISTERN_WIDTH,76,CISTERN_HEIGHT), sierra)
 
 # bowl
 
-umbrella = FloodStrip('umbrella', 12)
+umbrella = FloodStrip('umbrella', 12, 96)
 
 
 #in inches
@@ -141,33 +147,30 @@ strips = [
         kilo, lima, mike, november, oscar,
         papa, quebec, romeo, sierra, tango,
         ]
+
+floods = [umbrella]
+
+
 points = []
 
 for strip in strips:
     points.extend(strip.points())
 
-#def make_segment(px_py_seg, pz):
-    #return [(px, py, pz) for px, py in px_py_seg]
-
-##build layer by layer (what if have to build string by string?)
-#for led_z in range(LEDS_PER_UPRIGHT):
-    #pz = led_z * LEDS_PER_IN
-    #side_wall = make_segment(STUD_LOC_SIDE_HALF, pz)
-    #rear_wall = make_segment(STUD_LOC_REAR_HALF, pz)
-    #rear_wall_mirror = mirror_x(rear_wall, CISTERN_WIDTH)
-    #side_wall_mirror = mirror_x(side_wall, CISTERN_WIDTH)
-    #points.extend(side_wall)
-    #points.extend(rear_wall)
-    #points.extend(rear_wall_mirror)
-    #points.extend(side_wall_mirror)
 
 #do a maneuvering
-points = transform(points, (0,0,0))
+points = transform(points, (-1*CISTERN_CENTER, -1*CISTERN_DEPTH_C ,0))
+
+for flood in floods:
+    points.extend(flood.points())
+
 points = scale(points, IN_TO_M)
+
+
+
 # convert to JSON and print
 result = ['[']
 for point in points:
     result.append('  {"point": [%.4f, %.4f, %.4f]},' % point)
 result[-1] = result[-1][:-1]  # trim off last comma
 result.append(']')
-print '\n'.join(result)
+print('\n'.join(result))
