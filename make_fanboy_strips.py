@@ -49,7 +49,7 @@ RIB_LENGTH = 2 # welcome to meters, frenz
 #CISTERN_CENTER = CISTERN_WIDTH / 2
 #CISTERN_DEPTH = 76
 #CISTERN_DEPTH_C = CISTERN_DEPTH / 2
-#LEDS_PER_UPRIGHT = int(math.floor(RIB_LENGTH / LEDS_PER_METER))
+LEDS_PER_UPRIGHT = int(math.floor(RIB_LENGTH / LEDS_PER_METER))
 
 class LedStrip(object):
     def __init__(self, inner_radius, angle, outbound=True, length=120):
@@ -73,7 +73,7 @@ class LedStrip(object):
         return [(x_radius + (i*x_increment), 0, z_radius + (i*z_increment)) for i in led_range]
 
 
-strips = [(LedStrip((0.1 if i % 2 else 0.2), math.pi - i*(math.pi/20.0) + 0.5*(math.pi/20), bool(i % 2))) for i in range(19)]
+strips = [(LedStrip((0.01 if i % 2 else 0.02), math.pi - i*(math.pi/20.0) + 0.5*(math.pi/20))) for i in range(19)]
 
 points = []
 
