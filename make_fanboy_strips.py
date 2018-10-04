@@ -73,7 +73,7 @@ class LedStrip(object):
         return [(x_radius + (i*x_increment), 0, z_radius + (i*z_increment)) for i in led_range]
 
 
-strips = [(LedStrip((0.01 if i % 2 else 0.02), math.pi - i*(math.pi/20.0) + 0.5*(math.pi/20))) for i in range(19)]
+strips = [(LedStrip((0.01 if i % 2 else 0.02), math.pi - i*(math.pi/20.0) - (math.pi/20))) for i in range(19)]
 
 points = []
 
