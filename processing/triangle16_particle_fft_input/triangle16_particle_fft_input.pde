@@ -11,12 +11,13 @@ PImage colors;
 TriangleGrid triangle;
 Minim minim;
 AudioInput in;
+//AudioOutput out;
 FFT fft;
 float[] fftFilter;
 
 float spin = 0.003;
 float radiansPerBucket = radians(2);
-float decay = 0.20;
+float decay = 0.70;
 float opacity = 15;
 float minSize = 0.1;
 float sizeScale = 0.5;
@@ -29,12 +30,14 @@ void setup()
 
   // Small buffer size!
   in = minim.getLineIn();
+  //out = minim.getLineOut();
+  
 
   fft = new FFT(in.bufferSize(), in.sampleRate());
   fftFilter = new float[fft.specSize()];
 
-  dot = loadImage("fireworks-colors.png");
-  colors = loadImage("fireworks-colors-purple.png");
+  dot = loadImage("rainbow4.jpeg");
+  colors = loadImage("rainbow5.jpeg");
 
   // Connect to the local instance of fcserver
   //opc = new OPC(this, "127.0.0.1", 7890);
@@ -101,7 +104,7 @@ void draw()
  
     float size = height * (minSize + sizeScale * fftFilter[i]);
     PVector center = new PVector(width * (fftFilter[i] * 0.2), 0);
-    center.rotate(millis() * spin + i * radiansPerBucket);
+    //center.rotate(millis() * spin + i * radiansPerBucket);
     center.add(new PVector(width * 0.5, height * 0.5));
  
     image(dot, center.x - size/2, center.y - size/2, size, size);
