@@ -6,8 +6,8 @@ import ddf.minim.analysis.*;
 import ddf.minim.*;
 
 OPC opc;
-PImage dot;
-PImage colors;
+PImage scroll;
+PImage splash;
 Minim minim;
 AudioInput in;
 //AudioOutput out;
@@ -20,7 +20,9 @@ float radiansPerBucket = radians(2);
 float decay = 0.95;
 float opacity = 80;
 float minSize = 0.1;
-float sizeScale = 0.7;
+float sizeScale = 4.5;
+
+float heightScale;
 
 int foo = 0;
 
@@ -38,8 +40,9 @@ void setup()
   fft = new FFT(in.bufferSize(), in.sampleRate());
   fftFilter = new float[fft.specSize()];
 
-  dot = loadImage("rainbow5.jpeg");
-  //colors = loadImage("rainbow5.jpeg");
+  //scroll = loadImage("rainbow5.jpeg");
+  scroll = loadImage("steamrainbow.jpg");
+  splash = loadImage("steamrainbow.jpg");
 
   
   opcFanBoy();
@@ -53,7 +56,7 @@ void opcFanBoy() {
   int evenOffset = 8;
   int oddOffset = 12;
   
-  float originX = 0;
+  float originX = width / 40;
   float originY = height / 2;
   
   
@@ -83,37 +86,42 @@ void draw()
   //image(dot, foo, 0, width, height);
 
   fft.forward(in.mix);
+   image(scroll, foo, 0, width, height);
+    image(scroll, foo - width, 0, width, height);
+    foo = (millis() % 70000)/70 % width; 
   
-  
-  
+  float fftAvg = 0;
   for (int i = 0; i < fftFilter.length; i++) {
     
     float fresh = .15 * log(1 + fft.getBand(i));
     float newVal = (fresh > fftFilter[i] * 1.01) ? fresh : fftFilter[i] * .92;
     
     fftFilter[i] = newVal;
+  
+  
+  fftAvg += fftFilter[i];
     
-    //fftFilter[i] = .25 * (max(fftFilter[i] * decay, log(1 + fft.getBand(i)) * (1 + i * 0.013)));
-    //fftFilter[i] = .25 * (fftFilter[i] * decay + log(1 + fft.getBand(i)) * (1 + i * 0.013));
+  //  //fftFilter[i] = .25 * (max(fftFilter[i] * decay, log(1 + fft.getBand(i)) * (1 + i * 0.013)));
+  //  //fftFilter[i] = .25 * (fftFilter[i] * decay + log(1 + fft.getBand(i)) * (1 + i * 0.013));
   }
   
- // for (int i = 0; i < fftFilter.length; i += 30) {   
-  //  color rgb = colors.get(int(map(i, 0, fftFilter.length-1, 0, colors.width-1)), colors.height/2);
-    
-   
-   
+   fftAvg = (fftFilter[22] + fftFilter[55] + fftFilter[99]) / 3;
    
     blendMode(ADD);
-    //image(dot, foo, 0, width, height);
-    //image(dot, foo - width, 0, width, height);
-    foo = (millis() % 70000)/70 % width; 
+   
+    float low = height * (minSize + sizeScale * fftFilter[22]);
+    float mid = height * (minSize + sizeScale * fftFilter[55]);
+    float high = height * (minSize + sizeScale * fftFilter[99]);
     
-    float size = height * (minSize + sizeScale * fftFilter[22]);
-    //PVector center = new PVector(width * (fftFilter[i] * 0.2), 0);
-    //center.rotate(millis() * spin + i * radiansPerBucket);
-    //center.add(new PVector(width * .2, height * 0.5));
- 
-    //image(dot, height/2 - size/2, 0, size, width);
+    
+    float size = height * (minSize + sizeScale * fftAvg);
+     
+    heightScale = min(2.5, map(size, 0, height, 1,2.5));
+    tint(33, 153, 204, 255);
+    //image(splash, height/2 - size/2, 0, size, height /heightScale);
+    image(splash, 0, 0, width, height /heightScale);
+    tint(255, 255);
+     
     
     //image(dot, 0, height/2 - size/2, width, size);
    // image(dot, height/2 - size/2, widsize, width);

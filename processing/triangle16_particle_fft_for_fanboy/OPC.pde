@@ -23,13 +23,13 @@ public class OPC implements Runnable
   String colorCorrection;
   boolean enableShowLocations;
 
-  OPC(PApplet parent, String host, int port, boolean showLocations)
+  OPC(PApplet parent, String host, int port)
   {
     this.host = host;
     this.port = port;
     thread = new Thread(this);
     thread.start();
-    this.enableShowLocations = showLocations;
+    this.enableShowLocations = true;
     parent.registerMethod("draw", this);
   }
 
@@ -60,8 +60,8 @@ public class OPC implements Runnable
         (int)(y + (i - (count-1)/2.0) * spacing * s + 0.5));
     }
   }
-  
-  /**
+
+/**
    *
    * Set the location of several LEDs arranged in a ray, starting from (x,y).
    * index is the index of the first LED.
