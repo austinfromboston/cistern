@@ -41,6 +41,11 @@ int scrollSeam = 0;
 
 float size = 100;
 
+ int ledStripCount = 120;
+  int ledPixelSpacing = 2;
+  int evenOffset = 8;
+  int oddOffset = 12;
+
 void setup()
 {
   size(500, 500, P3D);
@@ -65,17 +70,16 @@ void setup()
 
   beat = new BeatDetect();
   beat.detectMode(BeatDetect.FREQ_ENERGY);
-  opcFenceBoy();
-  //opcFanBoy();
+  String ip = "192.168.10.4";
+  //opcFenceBoy(evenOffset, oddOffset, ledStripCount, ledPixelSpacing, ip);
+  opcFanBoy(evenOffset, oddOffset, ledStripCount, ledPixelSpacing, ip);
+  
+ 
 }
 
 
-void opcFanBoy() {
-  
-  int ledStripCount = 120;
-  int ledPixelSpacing = 2;
-  int evenOffset = 8;//17;
-  int oddOffset = 12;//24;
+void opcFanBoy(float evenOffset, float oddOffset, int ledStripCount, int ledPixelSpacing, String ip) {
+ 
   
   float originX = width / 2;
   float originY = 3 * height / 4;
@@ -88,19 +92,16 @@ void opcFanBoy() {
     float rayOffset = (ray % 2 == 0) ? evenOffset: oddOffset;
     float rayAngle = zeroStripAngle + ray * PI / 20 ;
     
-    OPC rayOpc = new OPC(this, "192.168.10.3", 7890 + ray, true);
+    OPC rayOpc = new OPC(this, ip, 7890 + ray, true);
     
     rayOpc.ledRay(0,ledStripCount, originX, originY, rayOffset, ledPixelSpacing, rayAngle);
    
   }
 }
 
-void opcFenceBoy() {
+void opcFenceBoy(float evenOffset, float oddOffset, int ledStripCount, int ledPixelSpacing, String ip) {
    
-  int ledStripCount = 120;
-  int ledPixelSpacing = 1;
-  int evenOffset = 8;
-  int oddOffset = 12;
+
   
   float originX = width / 40;
   float originY = height / 1.5;
@@ -118,7 +119,7 @@ void opcFenceBoy() {
     float rayOffset = (ray % 2 == 0) ? evenOffset: oddOffset;
     float rayAngle = zeroStripAngle ;
     
-    OPC rayOpc = new OPC(this, "192.168.10.4", 7890 + ray, true);
+    OPC rayOpc = new OPC(this, ip, 7890 + ray, true);
     
     rayOpc.ledRay(0,ledStripCount, originX, originY, rayOffset, ledPixelSpacing, rayAngle);
    
@@ -178,9 +179,9 @@ void draw()
     image(scroll, scrollSeam, 0, width, height);
     image(scroll, scrollSeam - width, 0, width, height);
     scrollSeam = (millis() % 70000)/70 % width;  
-    float waveHome = map(scrollSeam,0,width,1.5,2.5);
+
     
-  strokeWeight(4);
+  strokeWeight(6);
   strokeJoin(ROUND);
   if(lowCount > 48) {
     stroke (128,5,128, 64);
@@ -191,20 +192,29 @@ void draw()
   }else {
     stroke (5,128,255, 64);
   }
-  int crossing=0;
-  // draw the waveforms so we can see what we are monitoring
-  for(int i = 0; i < in.bufferSize() - 1 && i < width + crossing; i++)
-  {
-    // no sound
-    if (crossing==0 && in.mix.get(i) < 0 && in.mix.get(i+1) > 0) crossing=i;
-    // sound
-    if (crossing!=0){
+  
+  int bufferSize = in.bufferSize() -1 ;
+  for(int i = 0; i < bufferSize; i++)
+  { 
+      float originX = width / 2;
+      float originY = 3 * height / 4;
+      float r = map(scrollSeam, 0, width, evenOffset, evenOffset + ledStripCount * ledPixelSpacing);
+      
+      int amplitude = 200;
+      float sample = r + in.mix.get(i) * amplitude;
+      float samplePrime = r + in.mix.get(i+1) * amplitude;
+      float angle =  PI * i / bufferSize;
+      float anglePrime =  PI * (i + 1) / bufferSize;
+      
       line( 
-        i-crossing, 
-        height/waveHome + in.left.get(i) * 400, 
-        i+1-crossing, 
-        height/waveHome + in.left.get(i+1) * 400 );
-    }
+        originX - cos(angle) * sample,
+      //y1
+        originY - sin(angle) * sample, 
+      //x2
+        originX - cos(anglePrime) * samplePrime , 
+      //y2
+         originY - sin(angle) * samplePrime 
+       );
   }
- // }
+  
 }
