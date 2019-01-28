@@ -77,7 +77,7 @@ void opcFanBoy() {
     float rayOffset = (ray % 2 == 0) ? evenOffset: oddOffset;
     float rayAngle = zeroStripAngle ;
     
-    OPC rayOpc = new OPC(this, "192.168.10.3", 7890 + ray, true);
+    OPC rayOpc = new OPC(this, "192.168.10.4", 7890 + ray, true);
     
     rayOpc.ledRay(0,ledStripCount, originX, originY, rayOffset, ledPixelSpacing, rayAngle);
    
