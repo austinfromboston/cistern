@@ -22,8 +22,9 @@ public class OPC implements Runnable
   byte firmwareConfig;
   String colorCorrection;
   boolean enableShowLocations;
+  MidiStatus midi;
 
-  OPC(PApplet parent, String host, int port, boolean showLocations)
+  OPC(PApplet parent, String host, int port, boolean showLocations, MidiStatus midi)
   {
     this.host = host;
     this.port = port;
@@ -31,8 +32,8 @@ public class OPC implements Runnable
     thread.start();
     this.enableShowLocations = showLocations;
     parent.registerMethod("draw", this);
-
-}
+    this.midi = midi;
+  }
 
   // Set the location of a single LED
   void led(int index, int x, int y)  
@@ -256,7 +257,9 @@ public class OPC implements Runnable
       // No pixels defined yet
       return;
     }
-
+    if (output == null) {
+      return;
+    }
 
     int numPixels = pixelLocations.length;
     int ledAddress = 4;
@@ -268,25 +271,37 @@ public class OPC implements Runnable
       int pixelLocation = pixelLocations[i];
       int pixel = pixels[pixelLocation];
 
-      packetData[ledAddress] = (byte)(pixel >> 16);
-      packetData[ledAddress + 1] = (byte)(pixel >> 8);
-      packetData[ledAddress + 2] = (byte)pixel;
+      byte[] effectsPixel = this.pixelEffect(i, (byte)(pixel >> 16), (byte)(pixel >> 8), (byte)pixel);
+      packetData[ledAddress] = effectsPixel[0];
+      packetData[ledAddress + 1] = effectsPixel[1];
+      packetData[ledAddress + 2] = effectsPixel[2];
       ledAddress += 3;
 
       if (enableShowLocations) {
         pixels[pixelLocation] = 0xFFFFFF ^ pixel;
       }
     }
-    
-    if (enableShowLocations) {
-      updatePixels();
-    }
-    if (output == null) {
-      return;
-    }
 
     writePixels();
 
+    if (enableShowLocations) {
+      updatePixels();
+    }
+  }
+  
+  byte[] pixelEffect(int pixelIndex, byte red, byte green, byte blue) {
+    int gainLevel = 9 - round(map(this.midi.gainDial, MidiStatus.DIAL_MIN, MidiStatus.DIAL_MAX, 0, 8));
+    byte[] effectsPixel = new byte[3];
+    if(pixelIndex % gainLevel == 0) {
+      effectsPixel[0] = red;
+      effectsPixel[1] = green;
+      effectsPixel[2] = blue;      
+    } else {
+      effectsPixel[0] = (byte) 0;
+      effectsPixel[1] = (byte) 0;
+      effectsPixel[2] = (byte) 0;
+    }
+    return effectsPixel;
   }
   
   // Change the number of pixels in our output packet.
