@@ -15,7 +15,7 @@ AudioInput in;
 AudioOutput out;
 FFT fft;
 float[] fftFilter;
-float[] fftFilterLast;
+//float[] fftFilterLast;
 
 float spin = 0.003;
 
@@ -65,7 +65,8 @@ void setup()
   
 
   fft = new FFT(in.bufferSize(), in.sampleRate());
-  fftFilter = new float[fft.specSize()];
+  fft.logAverages(22, 1);
+  fftFilter = new float[in.bufferSize()];
 
   //scroll = loadImage("rainbow5.jpeg");
   scroll = loadImage("steamrainbow.jpg");
@@ -138,6 +139,15 @@ void draw()
   background(0);
   beat.detect(in.mix);
   
+  fft.forward(in.mix);
+  fft.setBand(0, 20);
+  fft.setBand(3, 20);
+  fft.setBand(4, 20);
+  for(int i = fft.specSize(); i<fft.specSize(); i--){
+    fft.setBand(i, 0.75);
+  }
+  fft.inverse(fftFilter);
+  
     if (beat.isKick()){
       lowCount = (lowCount + .5) % 64;
     }
@@ -166,7 +176,7 @@ void draw()
     int numSecPerScroll = 25;
     image(scroll, scrollSeam, 0, width, height);
     image(scroll, scrollSeam - width, 0, width, height);
-    scrollSeam = ((millis() % 70000)/2) / numSecPerScroll % width;  
+    scrollSeam = ((millis() % 100000)/2) / numSecPerScroll % width;  
 
 
     
@@ -185,7 +195,7 @@ void draw()
     colorOne = teal;
     colorTwo = purple;
   }
-  stroke (255,255,255, 64);
+  
   int bufferSize = in.bufferSize() -1 ;
   for(int i = 0; i < bufferSize; i++)
   { 
@@ -214,8 +224,8 @@ void draw()
        
       stroke (colorTwo[0],colorTwo[1],colorTwo[2], 64);
       
-      sample = r2 + in.mix.get(i) * amplitude;
-      samplePrime = r2 + in.mix.get(i+1) * amplitude;  
+      sample = r2 + fftFilter[i] * amplitude;
+      samplePrime = r2 + fftFilter[i + 1] * amplitude;  
       
       line( 
         originX - cos(angle) * sample,
