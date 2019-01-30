@@ -52,21 +52,31 @@ public class MidiStatus implements SimpleMidiListener {
   
   
   public void controllerChange(int channel, int number, int value) {
-      println("controllerChange channel " + channel + ": number "+ number + ", value " + value);
+    String dialName = "";
       if(number == HUE_DIAL) {
         this.hueDial = value;
+        dialName = "hue";
+      }
+      if(number == GAIN_DIAL) {
+        this.gainDial = value;
+        dialName = "gain";  
       }
       if(number == SPEED_DIAL) {
         this.speedDial = value;
+        dialName = "speed";  
       }
+      println("controllerChange dial " + dialName + " channel " + channel + ": number "+ number + ", value " + value);
+
   }
   
   public void noteOn(int channel, int pitch, int velocity) {
-      println("noteOn channel " + channel + ": pitch "+ pitch + ", velocity " + velocity);
+    String padName = "";
       if(pitch == SPARKLE_PAD) {
         this.sparklePadActive = true;
         this.sparklePadLevel = velocity;
+        padName = "sparkle";
       }
+      println("noteOn pad " + padName + " channel " + channel + ": pitch "+ pitch + ", velocity " + velocity);
   }
 
   public void noteOff(int channel, int pitch, int velocity) {

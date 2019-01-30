@@ -59,10 +59,12 @@ void setup()
 
   beat = new BeatDetect();
   beat.detectMode(BeatDetect.FREQ_ENERGY);
-  String ip = "192.168.10.4";
-  opcFanBoy(evenOffset, oddOffset, ledStripCount, ledPixelSpacing, ip);
   venusPattern = new VenusPattern(this, beat, midiStatus);
   backgroundScroll = new BackgroundScroll(this, beat, midiStatus);  
+
+  
+  String ip = "192.168.10.4";
+  opcFanBoy(evenOffset, oddOffset, ledStripCount, ledPixelSpacing, ip);
 }
 
 
@@ -154,6 +156,8 @@ void draw()
       float angle =  PI * i / bufferSize;
       float anglePrime =  PI * (i + 1) / bufferSize;
       
+      blendMode(ADD);
+      
       line( 
         originX - cos(angle) * sample,
       //y1
@@ -163,6 +167,7 @@ void draw()
       //y2
          originY - sin(angle) * samplePrime 
        );
+       
   }
   
 }
