@@ -33,12 +33,12 @@ float mid = 0;
 float high = 0;
 float lowCount = 0;
 
-    int[] colorOne = new int[3];
-    int[] colorTwo = new int[3];
-    int[] purple = {128,5,128};
-    int[] orange = {255,128,5};
-    int[] pink = {255,5,128};
-    int[] teal = {5,128,255};
+    color colorOne;
+    color colorTwo;
+    color purple = color(128,5,128);
+    color orange = color(255,128,5);
+    color pink = color(255,5,128);
+    color teal = color(5,128,255);
 
 BeatDetect beat;
 
@@ -210,7 +210,7 @@ void draw()
       float angle =  PI * i / bufferSize;
       float anglePrime =  PI * (i + 1) / bufferSize;
       
-      stroke (colorOne[0],colorOne[1],colorOne[2], 64);
+      stroke (colorOne, 64);
       
       line( 
         originX - cos(angle) * sample,
@@ -222,7 +222,7 @@ void draw()
          originY - sin(angle) * samplePrime 
        );
        
-      stroke (colorTwo[0],colorTwo[1],colorTwo[2], 64);
+      stroke (colorTwo, 64);
       
       sample = r2 + fftFilter[i] * amplitude;
       samplePrime = r2 + fftFilter[i + 1] * amplitude;  
