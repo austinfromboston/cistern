@@ -5,6 +5,9 @@
 import ddf.minim.analysis.*;
 import ddf.minim.*;
 //import themidibus.*;
+  
+import processing.video.*;
+Movie myMovie;
 
 OPC opc;
 VenusPattern venusPattern;
@@ -60,8 +63,10 @@ void setup()
   beat = new BeatDetect();
   beat.detectMode(BeatDetect.FREQ_ENERGY);
   venusPattern = new VenusPattern(this, beat, midiStatus);
-  backgroundScroll = new BackgroundScroll(this, beat, midiStatus);  
+  //backgroundScroll = new BackgroundScroll(this, beat, midiStatus);  
 
+  myMovie = new Movie(this, "ferris_bueller.mp4");
+  myMovie.play();
   
   String ip = "192.168.10.4";
   opcFanBoy(evenOffset, oddOffset, ledStripCount, ledPixelSpacing, ip);
@@ -82,7 +87,7 @@ void opcFanBoy(float evenOffset, float oddOffset, int ledStripCount, int ledPixe
     float rayOffset = (ray % 2 == 0) ? evenOffset: oddOffset;
     float rayAngle = zeroStripAngle + ray * PI / 20 ;
     
-    OPC rayOpc = new OPC(this, ip, 7890 + ray, true, midiStatus);
+    OPC rayOpc = new OPC(this, ip, 7890 + ray, false, midiStatus);
     
     rayOpc.ledRay(0,ledStripCount, originX, originY, rayOffset, ledPixelSpacing, rayAngle);
    
@@ -116,7 +121,7 @@ void opcFenceBoy(float evenOffset, float oddOffset, int ledStripCount, int ledPi
   }
 }
 
-
+  
 void draw()
 {
   background(0);
@@ -148,9 +153,9 @@ void draw()
   { 
       float originX = width / 2;
       float originY = 3 * height / 4;
-      float r = map(backgroundScroll.cycleMarker(), 0, width, evenOffset, evenOffset + ledStripCount * ledPixelSpacing);
+      float r = evenOffset + ledStripCount * ledPixelSpacing;
       
-      int amplitude = 200;
+      int amplitude = 50;
       float sample = r + in.mix.get(i) * amplitude;
       float samplePrime = r + in.mix.get(i+1) * amplitude;
       float angle =  PI * i / bufferSize;
@@ -169,5 +174,26 @@ void draw()
        );
        
   }
-  
+      blendMode(ADD);
+          tint(255, 128); 
+          pushMatrix();
+          scale(1.0, -1.0);
+          image(myMovie, 0, -100, 500, -280); 
+          popMatrix();
+
+
+}
+
+// Called every time a new frame is available to read
+void movieEvent(Movie m) {
+  m.read();
+}
+
+
+void keyPressed() {
+  if (key == CODED) {
+    if (keyCode == RIGHT) {
+      myMovie.jump(myMovie.time() + 300);
+    }
+  } 
 }
