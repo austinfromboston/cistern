@@ -93,7 +93,7 @@ void setup()
 
   beat = new BeatDetect();
   beat.detectMode(BeatDetect.FREQ_ENERGY);
-  String ip = "192.168.10.4";
+  String ip = "192.168.10.3";
   //opcFenceBoy(evenOffset, oddOffset, ledStripCount, ledPixelSpacing, ip);
   //opcFanBoy(evenOffset, oddOffset, ledStripCount, ledPixelSpacing, ip);
   opcLayout(layout, 19, 120, ip);
@@ -163,6 +163,7 @@ void draw()
 {
   background(0);
   beat.detect(in.mix);
+  //midiStatus = new MidiStatus();
   
   fft.forward(in.mix);
   fft.setBand(0, 20);
@@ -191,18 +192,20 @@ void draw()
     //int venus3Alpha = (int) map(low3, 0, 1, 0 ,255);
     //int venus4Alpha = (int) map(low4, 0, 1, 0 ,255);
     
-    int scrollAlpha;
-    if (midiStatus.opcDial > 192) {
-      scrollAlpha = (int) map(mid, 0, 1, 0 ,255);
-    } else {
-      scrollAlpha = 0;
-    }
     int oscillAlpha;
-    if (midiStatus.opcDial > 127) {
-      oscillAlpha = (int) map(midiStatus.opcDial, 127, 255, 40 , 70);
+    if (midiStatus.opcDial > 65) {
+      oscillAlpha = (int) map(midiStatus.opcDial, 65, 128, 40 , 70);
     } else {
       oscillAlpha = 0;
     }
+    int scrollAlpha;
+    if (midiStatus.opcDial > 96) {
+      scrollAlpha = (int) map(mid, 0, 1, 0 ,midiStatus.opcDial + (255 - 96));
+    } else {
+      scrollAlpha = 0;
+    }
+
+    
     
     //int batteryAlpha = (int) map(high, 0, 1, 0 ,255);
     
@@ -240,7 +243,7 @@ void draw()
       float r1 = map(scrollSeam, 0, width, evenOffset, evenOffset + ledStripCount * ledPixelSpacing);
       float r2 = map((scrollSeam + width / 2) % width , 0, width, evenOffset, evenOffset + ledStripCount * ledPixelSpacing);
       
-      int amplitude = 100;
+      int amplitude = 80;
       float sample = r1 + in.mix.get(i) * amplitude;
       float samplePrime = r1 + in.mix.get(i+1) * amplitude;
       float angle =  PI * i / bufferSize;
