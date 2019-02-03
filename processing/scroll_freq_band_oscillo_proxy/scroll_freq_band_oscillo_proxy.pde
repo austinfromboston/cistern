@@ -110,6 +110,13 @@ void opcLayout(LayoutLoader layout, int ledStripCount, int ledsPerStrip, String 
     }
 }
 
+void keyPressed() {
+  if (keyCode == 32) {
+    midiStatus.opcDial = (midiStatus.opcDial + 20) % 127;
+    println("opc is now ", midiStatus.opcDial);
+  }
+}
+
 
 void opcFanBoy(float evenOffset, float oddOffset, int ledStripCount, int ledPixelSpacing, String ip) {
  
