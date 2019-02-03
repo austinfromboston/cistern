@@ -48,8 +48,8 @@ public class MidiStatus implements SimpleMidiListener {
     this.opcDial = 64;
     
     int midiDevice = 0;
-    MidiBus.list(); // List all available Midi devices on STDOUT. This will show each device's index and name.
-    this.myBus = new MidiBus(this, midiDevice, 1); // Create a new MidiBus object
+    //MidiBus.list(); // List all available Midi devices on STDOUT. This will show each device's index and name.
+    //this.myBus = new MidiBus(this, midiDevice, 1); // Create a new MidiBus object
   }
   
   
