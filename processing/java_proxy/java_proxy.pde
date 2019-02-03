@@ -9,8 +9,8 @@ void setup()
 
   opcIn = new OPCListener(this, 7890, layout.points.size());
   size(640, 640);
-    smallPoint = 2;
-      noStroke();
+  smallPoint = 2;
+  noStroke();
   background(0);
 }
 
