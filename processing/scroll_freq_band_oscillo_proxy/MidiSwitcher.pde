@@ -45,7 +45,7 @@ public class MidiStatus implements SimpleMidiListener {
     this.sparklePadLevel = 0;
     this.sparklePadActive = false;
     this.gainDial = 127;
-    this.opcDial = 200;
+    this.opcDial = 64;
     
     int midiDevice = 0;
     MidiBus.list(); // List all available Midi devices on STDOUT. This will show each device's index and name.

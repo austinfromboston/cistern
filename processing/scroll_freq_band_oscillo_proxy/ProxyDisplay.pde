@@ -23,18 +23,21 @@ public class ProxyDisplay {
   }
   
   void draw() {
+    if(this.midi.opcDial > 120) {
+    
+    }
     blendMode(ADD);
     //tint(255, 255);
     noStroke();
     //background(0);
-
+    
     for(int i=0; i < layout.points.size(); i++) {
       if(opcIn.opcColors != null) {
         int r = opcIn.opcColors[i * 3];
         int g = opcIn.opcColors[i * 3 + 1];
         int b = opcIn.opcColors[i * 3 + 2];
         if (i % 1000 == 0) {
-          println("color is", r, g,b );
+          //println("color is", r, g,b );
         }
         fill(color(r, g, b), 255);
       } else {
