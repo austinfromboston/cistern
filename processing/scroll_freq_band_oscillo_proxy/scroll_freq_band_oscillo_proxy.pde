@@ -76,7 +76,7 @@ void setup()
 
   layout = layout.flip(0,0,0).multiplied(115).offset(originX, 0, originY);
 
-  opcIn = new OPCListener(7890, layout.points.size());
+  opcIn = new OPCListener(8890, layout.points.size());
   opcDisplay = new ProxyDisplay(this, opcIn, midiStatus, layout);
 
   fft = new FFT(in.bufferSize(), in.sampleRate());
@@ -93,7 +93,8 @@ void setup()
 
   beat = new BeatDetect();
   beat.detectMode(BeatDetect.FREQ_ENERGY);
-  String ip = "192.168.10.4";
+  //String ip = "192.168.10.4";
+  String ip = "localhost";
   //opcFenceBoy(evenOffset, oddOffset, ledStripCount, ledPixelSpacing, ip);
   //opcFanBoy(evenOffset, oddOffset, ledStripCount, ledPixelSpacing, ip);
   opcLayout(layout, 19, 120, ip);
