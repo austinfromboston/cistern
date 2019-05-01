@@ -48,7 +48,7 @@ int scrollSeam = 0;
 
 float size = 100;
 
- int ledStripCount = 120;
+ int ledStripCount = 240;
   int ledPixelSpacing = 2;
   int evenOffset = 8;
   int oddOffset = 12;
@@ -62,7 +62,7 @@ MidiStatus midiStatus;
 
 void setup()
 {
-  size(500, 500, P3D);
+  size(1000, 700, P3D);
 
   minim = new Minim(this); 
 
@@ -70,7 +70,7 @@ void setup()
   in = minim.getLineIn();
   midiStatus = new MidiStatus(this);
   layout = new LayoutLoader();
-  layout.loadList("data/fanboy_strips3.json");
+  layout.loadList("data/space_potty_fan2.json");
   float originX = width / 2;
   float originY = 3 * height / 4;
 
@@ -117,54 +117,6 @@ void keyPressed() {
   }
 }
 
-
-void opcFanBoy(float evenOffset, float oddOffset, int ledStripCount, int ledPixelSpacing, String ip) {
- 
-  
-  float originX = width / 2;
-  float originY = 3 * height / 4;
-  
-  //start pointing at -X + PI/40
-  float zeroStripAngle = PI + PI/20;
-  
-  for(int ray = 0; ray < 19; ray++){
-    
-    float rayOffset = (ray % 2 == 0) ? evenOffset: oddOffset;
-    float rayAngle = zeroStripAngle + ray * PI / 20 ;
-    
-    OPC rayOpc = new OPC(this, ip, 7890 + ray, true);
-    
-    rayOpc.ledRay(0,ledStripCount, originX, originY, rayOffset, ledPixelSpacing, rayAngle);
-    
-  }
-}
-
-void opcFenceBoy(float evenOffset, float oddOffset, int ledStripCount, int ledPixelSpacing, String ip) {
-   
-
-  
-  float originX = width / 40;
-  float originY = height / 1.5;
-  
-  
-  
-  //start pointing at -X + PI/40
-  float zeroStripAngle = PI + PI / 2;
-  
-  
-  for(int ray = 0; ray < 19; ray++){
-    
-    originX += width / 20;
-    
-    float rayOffset = (ray % 2 == 0) ? evenOffset: oddOffset;
-    float rayAngle = zeroStripAngle ;
-    
-    OPC rayOpc = new OPC(this, ip, 7890 + ray, true);
-    
-    rayOpc.ledRay(0,ledStripCount, originX, originY, rayOffset, ledPixelSpacing, rayAngle);
-   
-  }
-}
 
 void draw()
 {
