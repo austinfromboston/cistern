@@ -122,7 +122,7 @@ void draw()
 {
   background(0);
   beat.detect(in.mix);
-  //midiStatus = new MidiStatus();
+
   
   fft.forward(in.mix);
   fft.setBand(0, 20);
