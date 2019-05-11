@@ -5,7 +5,7 @@ OPCListener opcIn;
 void setup()
 {
   layout = new LayoutLoader();
-  layout.loadList("data/fanboy_strips3.json");
+  layout.loadList("data/fanboy_strips.json");
 
   opcIn = new OPCListener(this, 7890, layout.points.size());
   size(640, 640);
