@@ -70,7 +70,7 @@ void setup()
   in = minim.getLineIn();
   midiStatus = new MidiStatus(this);
   layout = new LayoutLoader();
-  layout.loadList("data/space_potty_fan2.json");
+  layout.loadList("data/space_potty_fan.json");
   float originX = width / 2;
   float originY = 3 * height / 4;
 
