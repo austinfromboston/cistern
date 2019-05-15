@@ -1,11 +1,12 @@
 import ddf.minim.analysis.*;
 import ddf.minim.*;
-//import themidibus.*;
+import themidibus.*;
 
 
 OPC opc;
 CircularOscilloscope circleScope;
 BackgroundScroll backgroundScroll;
+
 MidiStatus midiStatus;
 PImage splash;
 Minim minim;
@@ -119,4 +120,3 @@ void draw()
   background(0);
 
 }
-
