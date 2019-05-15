@@ -83,8 +83,8 @@ public class MidiStatus implements SimpleMidiListener {
         padName = "sparkle";
       }
       if(pitch == UNUSED_PAD_2) {
-        this.myBus.removeInput(0);
-        padName = "dropMidi";
+        //this.myBus.removeInput(0);
+        //padName = "dropMidi";
       }
       println("noteOn pad " + padName + " channel " + channel + ": pitch "+ pitch + ", velocity " + velocity);
   }
