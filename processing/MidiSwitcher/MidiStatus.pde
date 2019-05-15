@@ -22,7 +22,7 @@ int PATTERN_SELECTOR_DIAL = 4;
 int DIRECTION_DIAL = 5;
 int HUE_DIAL = 6;
 int SATURATION_DIAL = 7;
-int UNUSED_DIAL = 8;
+int AMPLITUDE_DIAL = 8;
 
 public class MidiStatus implements SimpleMidiListener {
   PApplet parent;
@@ -30,6 +30,7 @@ public class MidiStatus implements SimpleMidiListener {
   public int hueDial;
   public int speedDial;
   public int gainDial;
+  public int amplitudeDial;
   public boolean sparklePadActive;
   public int sparklePadLevel;
   public static final int DIAL_MIN = 0;
@@ -44,6 +45,7 @@ public class MidiStatus implements SimpleMidiListener {
     this.sparklePadLevel = 0;
     this.sparklePadActive = false;
     this.gainDial = 127;
+    this.amplitudeDial = 0;
     
     int midiDevice = 0;
     MidiBus.list(); // List all available Midi devices on STDOUT. This will show each device's index and name.

@@ -71,6 +71,7 @@ void setup()
   midiStatus = new MidiStatus(this);
   layout = new LayoutLoader();
   layout.loadList("data/space_potty_fan.json");
+
   float originX = width / 2;
   float originY = 3 * height / 4;
 
@@ -123,7 +124,7 @@ void draw()
   background(0);
   beat.detect(in.mix);
 
-  
+
   fft.forward(in.mix);
   fft.setBand(0, 20);
   fft.setBand(3, 20);
@@ -132,24 +133,14 @@ void draw()
     fft.setBand(i, 0.75);
   }
   fft.inverse(fftFilter);
+
   
     if (beat.isKick()){
       lowCount = (lowCount + .5) % 64;
     }
-   
-    //low1 = beat.isKick() && lowCount  > 0   ? .5 : max(0, low1 * 0.92);
-    //low2 = beat.isKick() && lowCount  > 16  ? .6 : max(0, low2 * 0.9);
-    //low3 = beat.isKick() &&  lowCount > 32  ? .66 : max(0, low3 * 0.87);
-    //low4 = beat.isKick() && lowCount  > 48  ? .7 : max(0, low4 * 0.85);
-    
-    mid = beat.isSnare() ? .3 : max(.1,mid * 0.96);
-    //high = beat.isHat() ? .3 : max(0,high * 0.85);;
-    
 
-    //int venus1Alpha = (int) map(low1, 0, 1, 0 ,255);
-    //int venus2Alpha = (int) map(low2, 0, 1, 0 ,255);
-    //int venus3Alpha = (int) map(low3, 0, 1, 0 ,255);
-    //int venus4Alpha = (int) map(low4, 0, 1, 0 ,255);
+    mid = beat.isSnare() ? .3 : max(.1,mid * 0.96);
+
     
     int oscillAlpha;
     if (midiStatus.opcDial > 65) {
