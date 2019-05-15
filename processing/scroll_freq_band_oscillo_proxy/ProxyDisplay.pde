@@ -14,7 +14,7 @@ public class ProxyDisplay {
   
   public ProxyDisplay(PApplet parent, OPCListener opcIn, MidiStatus midi, LayoutLoader layout) {
     this.parent = parent;
-    this.parent.registerMethod("draw", this);
+      this.parent.registerMethod("draw", this);
 
     this.midi = midi;
     this.opcIn = opcIn;
