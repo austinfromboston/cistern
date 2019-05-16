@@ -4,8 +4,7 @@ public class StarField {
   PApplet parent;
   MidiStatus midi;
   boolean drawing;
-
-
+  Star[] stars = new Star[100];
 
 
   public StarField(
@@ -19,19 +18,32 @@ public class StarField {
 
     this.drawing = true;
 
+    for(int i = 0; i < stars.length; i++ ){
+      stars[i] = new Star();
+    }
+
   }
 
-  private float radiusGrowth() {
-    return 0.0;
-  }
 
   void draw() {
     if(drawing) {
 
-
+      for(int i = 0; i < stars.length; i++ ){
+        stars[i] = new Star();
+      }
 
 
 
     }
   }
+}
+
+public class Star {
+ float x;
+ float y;
+ float z;
+
+ public Star(){
+
+ }
 }
