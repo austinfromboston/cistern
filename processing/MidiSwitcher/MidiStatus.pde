@@ -24,6 +24,8 @@ int HUE_DIAL = 6;
 int SATURATION_DIAL = 7;
 int AMPLITUDE_DIAL = 8;
 
+MidiProxy midiProxy;
+
 public class MidiStatus implements SimpleMidiListener {
   PApplet parent;
 
@@ -36,6 +38,7 @@ public class MidiStatus implements SimpleMidiListener {
   public static final int DIAL_MIN = 0;
   public static final int DIAL_MAX = 127;
   public MidiBus myBus; // The MidiBus
+  
 
   
   public MidiStatus(PApplet parent) {
@@ -49,7 +52,9 @@ public class MidiStatus implements SimpleMidiListener {
     
     int midiDevice = 0;
     MidiBus.list(); // List all available Midi devices on STDOUT. This will show each device's index and name.
-    this.myBus = new MidiBus(this, midiDevice, 1); // Create a new MidiBus object
+    this.myBus = new MidiBus(this, midiDevice, 1, "dev22"); // Create a new MidiBus object
+    midiProxy = new MidiProxy("localhost", 3333);
+    this.myBus.addMidiListener(midiProxy);
   }
   
   

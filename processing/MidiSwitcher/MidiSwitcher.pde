@@ -50,7 +50,7 @@ void setup()
 {
   size(1000, 700, P3D);
 
-  String ip = "127.0.0.1";
+  String ip = "localhost";
   float originX = width / 2;
   float originY = 3 * height / 4;
   
@@ -73,10 +73,11 @@ void setup()
 
   
   layout = layout.flip(0,0,0).multiplied(115).offset(originX, 0, originY);
+
+  opcIn = new OPCListener(8890, layout.points.size());
+  opcDisplay = new ProxyDisplay(this, opcIn, midiStatus, layout);
+  
   opcLayout(layout, 37, 120, ip);
-  
-  
-  //opcFanBoy(evenOffset, oddOffset, ledStripCount, ledPixelSpacing, ip);
 }
 
 
@@ -144,5 +145,4 @@ void opcFenceBoy(float evenOffset, float oddOffset, int ledStripCount, int ledPi
 void draw()
 {
   background(0);
-
 }

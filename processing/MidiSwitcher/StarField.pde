@@ -47,6 +47,7 @@ public class StarField {
       }
 
 
+      translate(0-originX, 0-originY);
 
     }
   }

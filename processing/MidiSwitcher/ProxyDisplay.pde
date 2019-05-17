@@ -41,7 +41,7 @@ public class ProxyDisplay {
         }
         fill(color(r, g, b), 255);
       } else {
-        //fill(#AA33FF, 200);
+        fill(#AA33FF, 200);
       }
       Coordinate mappedPoint = layout.points.get(i); //.flip(0,0,0).multiplied(30).offset(300, 200, 500);
       //println(String.format("showing x %f z %f", mappedPoint.x, mappedPoint.z));
