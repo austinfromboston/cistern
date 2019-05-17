@@ -6,6 +6,7 @@ import themidibus.*;
 OPC opc;
 CircularOscilloscope circleScope;
 BackgroundScroll backgroundScroll;
+StarField starField;
 
 MidiStatus midiStatus;
 PImage splash;
@@ -43,7 +44,7 @@ float size = 100;
 
 void setup()
 {
-  size(500, 500, P3D);
+  size(800, 800, P3D);
 
   minim = new Minim(this);
   in = minim.getLineIn();
@@ -58,7 +59,7 @@ void setup()
 
   backgroundScroll = new BackgroundScroll(this, beat, midiStatus);
   circleScope = new CircularOscilloscope(this, beat, in, midiStatus, evenOffset, evenOffset + ledPixelSpacing * ledStripCount);
-
+  starField = new StarField(this, midiStatus);
 
  
   String ip = "192.168.10.4";
