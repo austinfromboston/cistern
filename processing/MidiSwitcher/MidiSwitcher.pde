@@ -17,6 +17,10 @@ FFT fft;
 float[] fftFilter;
 float[] fftFilterLast;
 
+LayoutLoader layout;
+OPCListener opcIn;
+ProxyDisplay opcDisplay;
+
 float spin = 0.003;
 
 float decay = 0.95;
@@ -44,8 +48,12 @@ float size = 100;
 
 void setup()
 {
-  size(800, 800, P3D);
+  size(1000, 700, P3D);
 
+  String ip = "127.0.0.1";
+  float originX = width / 2;
+  float originY = 3 * height / 4;
+  
   minim = new Minim(this);
   in = minim.getLineIn();
 
@@ -53,17 +61,22 @@ void setup()
   fftFilter = new float[fft.specSize()];
 
   midiStatus = new MidiStatus(this);
+  layout = new LayoutLoader();
+  layout.loadList("data/space_potty_fan.json");
 
   beat = new BeatDetect();
   beat.detectMode(BeatDetect.FREQ_ENERGY);
 
   backgroundScroll = new BackgroundScroll(this, beat, midiStatus);
   circleScope = new CircularOscilloscope(this, beat, in, midiStatus, evenOffset, evenOffset + ledPixelSpacing * ledStripCount);
-  starField = new StarField(this, midiStatus);
+  starField = new StarField(this, midiStatus, originX, originY);
 
- 
-  String ip = "192.168.10.4";
-  opcFanBoy(evenOffset, oddOffset, ledStripCount, ledPixelSpacing, ip);
+  
+  layout = layout.flip(0,0,0).multiplied(115).offset(originX, 0, originY);
+  opcLayout(layout, 37, 120, ip);
+  
+  
+  //opcFanBoy(evenOffset, oddOffset, ledStripCount, ledPixelSpacing, ip);
 }
 
 
@@ -81,12 +94,24 @@ void opcFanBoy(float evenOffset, float oddOffset, int ledStripCount, int ledPixe
     float rayOffset = (ray % 2 == 0) ? evenOffset: oddOffset;
     float rayAngle = zeroStripAngle + ray * PI / 20 ;
     
-    OPC rayOpc = new OPC(this, ip, 7890 + ray, false, midiStatus);
+    OPC rayOpc = new OPC(this, ip, 7890 + ray, false);
     
     rayOpc.ledRay(0,ledStripCount, originX, originY, rayOffset, ledPixelSpacing, rayAngle);
    
   }
 }
+
+
+void opcLayout(LayoutLoader layout, int ledStripCount, int ledsPerStrip, String ip) {
+
+    for(int ray = 0; ray < ledStripCount; ray++){
+      OPC rayOpc = new OPC(this, ip, 7890 + ray, false);
+      
+      rayOpc.ledRayLayout(0, ray, layout,ledsPerStrip);
+      
+    }
+}
+
 
 void opcFenceBoy(float evenOffset, float oddOffset, int ledStripCount, int ledPixelSpacing, String ip) {
    
@@ -108,7 +133,7 @@ void opcFenceBoy(float evenOffset, float oddOffset, int ledStripCount, int ledPi
     float rayOffset = (ray % 2 == 0) ? evenOffset: oddOffset;
     float rayAngle = zeroStripAngle ;
     
-    OPC rayOpc = new OPC(this, ip, 7890 + ray, true, midiStatus);
+    OPC rayOpc = new OPC(this, ip, 7890 + ray, true);
     
     rayOpc.ledRay(0,ledStripCount, originX, originY, rayOffset, ledPixelSpacing, rayAngle);
    

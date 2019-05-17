@@ -5,16 +5,21 @@ public class StarField {
   MidiStatus midi;
   boolean drawing;
   Star[] stars = new Star[1400];
+  float originX;
+  float originY;
 
 
   public StarField(
     PApplet parent,
-    MidiStatus midi
+    MidiStatus midi,
+    float originX,
+    float originY
   ) {
     this.parent = parent;
     this.parent.registerMethod("draw", this);
     this.midi = midi;
-
+    this.originX = originX;
+    this.originY = originY;
 
     this.drawing = true;
 
@@ -30,7 +35,7 @@ public class StarField {
     if(drawing) {
       background(0);
       
-      translate(width/2, height/2);
+      translate(originX, originY);
       
       float speed = (midi != null) ? midi.speedDial : 22;
       
@@ -87,8 +92,8 @@ public class Star {
    z = zPrime;
    
    stroke(255);
-   //ellipse(sx, sy, radius/8, radius/8);
-   strokeWeight(radius);
+   ellipse(sx, sy, radius/8, radius/8);
+   //strokeWeight(radius*1);
    line(px,py,sx,sy);
    
  }
