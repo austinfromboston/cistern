@@ -1,4 +1,4 @@
-import processing.core.PApplet;
+ import processing.core.PApplet;
 import themidibus.*;
 import java.net.*;
 
@@ -32,7 +32,6 @@ public class MidiProxy implements RawMidiListener {
       socket.close();
     } catch (Exception e) {
       println("esplode", e.toString());
-      dispose();
     }
   }
 }

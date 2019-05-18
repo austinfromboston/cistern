@@ -2,11 +2,7 @@ import java.net.*;
 import java.util.Arrays;
 import java.io.*;
 
-public class WTFException extends Exception {
-    public WTFException(String message) {
-        super(message);
-    }
-}
+
 
 public class OPCListener implements Runnable {
   Thread thread;
@@ -29,6 +25,7 @@ public class OPCListener implements Runnable {
   ArrayList<String> dataReceived;
   int frameSize;
   int frameIndex;
+  long deadConnectionStartTime;
   
   OPCListener(int port, int ledCount)
   {
@@ -40,6 +37,7 @@ public class OPCListener implements Runnable {
     this.frameSize = ledCount * 3;
     this.opcColors = new int[this.frameSize];
     this.frameIndex = 0;
+    this.deadConnectionStartTime = 0;
   }
   
 
@@ -48,9 +46,16 @@ public class OPCListener implements Runnable {
     // Destroy the socket. Called internally when we've disconnected.
     // (Thread continues to run)
     if (input != null) {
-      println("Disconnected from OPC server");
     }
-    socket = null;
+    try{
+    pendingSocket.close();
+    input.close();
+    socket.close();
+    } catch (IOException e){
+    } catch (NullPointerException e){
+    }
+    
+    //socket = null;
     input = null;
   }
   void debugFrame() {
@@ -87,9 +92,9 @@ public class OPCListener implements Runnable {
     }
   }
   
-  void readColors() {
+  void readColors() throws IOException {
     if (input != null) {
-      try {
+      //try {
         if(input.available() >= HEADER_SIZE) {
           byte[] headerBuf = new byte[HEADER_SIZE];
           input.read(headerBuf);
@@ -119,20 +124,16 @@ public class OPCListener implements Runnable {
             }
             this.frameIndex = (this.frameIndex + declaredLength) % this.frameSize;
           }
-          //if(command != PAINT_COMMAND) {
-          //  throw new WTFException("wtf is this?" + command + " length " + declaredLength);
-          //}
-          //println("i see header", headerBuf[0], headerBuf[1], headerBuf[2], headerBuf[3]);
-          //println("i see input", buf[0], buf[1], buf[2], buf[3], buf[4], buf[5]);
+          this.deadConnectionStartTime = 0;
+        } else {
+          long currentTime = System.currentTimeMillis();
+          if(this.deadConnectionStartTime == 0) {
+            this.deadConnectionStartTime = currentTime;
+          } else if (currentTime > (this.deadConnectionStartTime  + 5*1000)) {
+            this.deadConnectionStartTime = 0;
+            throw new EOFException();
+          }
         }
-      }
-      catch(IOException e) {
-        println("error reading input");
-      }
-      //catch(WTFException e) {
-      //  println(e);
-      //  exit();
-      //}
     }
   }
   
@@ -142,7 +143,7 @@ public class OPCListener implements Runnable {
     // Important for OPC arrays; faster startup, client continues
     // to run smoothly when mobile servers go in and out of range.
     for(;;) {
-
+        println("at very beginning of inifinte loop");
       if(input == null) { // No OPC connection?
         try {              // Make one!
           pendingSocket = new ServerSocket(port);
@@ -161,12 +162,12 @@ public class OPCListener implements Runnable {
           //this.debugFrame();
         } catch (ConnectException e) {
           dispose();
-        } catch (IOException e) {
+        } catch (IOException  e) {
           dispose();
         }
       } else {
         //this.debugFrame();
-        this.readColors();
+        //this.readColors();
       }
 
       // Pause thread to avoid massive CPU load
