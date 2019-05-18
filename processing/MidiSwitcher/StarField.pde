@@ -47,7 +47,7 @@ public class StarField {
       }
 
 
-      translate(0-originX, 0-originY);
+      translate(-originX, -originY);
 
     }
   }
@@ -58,6 +58,20 @@ public class Star {
  float y;
  float z;
  float zPrime;
+ 
+ color[] redShift = {
+   color(75, 0, 130),
+   color(0, 0, 255),
+   color(0, 255, 0),
+   color(255),
+   color(255),
+   color(255),
+   color(255),
+   color(255, 255, 0),
+   color(255, 127, 0),
+   color(255, 0 , 0)
+ };
+ 
 
  public Star() {
    resetInSpace();
@@ -84,7 +98,7 @@ public class Star {
    float sx = map(x / zPrime , 0, 1, 0, width/2);
    float sy = map(y / zPrime , 0, 1, 0, height/2);
    
-   float radius = map(zPrime , 0, width, 3, 0);
+   float radius = map(zPrime , 0, width, 4, 0);
    
    
    float px = map(x / z, 0, 1, 0, width/2);
@@ -92,10 +106,32 @@ public class Star {
 
    z = zPrime;
    
-   stroke(255);
-   ellipse(sx, sy, radius/8, radius/8);
-   //strokeWeight(radius*1);
-   line(px,py,sx,sy);
+   //stroke(255);
+   //ellipse(sx, sy, radius/8, radius/8);
+   strokeWeight(radius*1);
+   //line(px,py,sx,sy);
+
+   redShiftLine(px, py, sx, sy);
    
  }
+ 
+ void redShiftLine(float x1, float y1, float x2, float y2) {
+  float deltaX = x2-x1;
+  float deltaY = y2-y1;
+  
+  float lenSqared = deltaX * deltaX + deltaY * deltaY;
+  
+  if (lenSqared > 100){
+    float sliceX = deltaX /10;
+    float sliceY = deltaY /10;
+    for (int t = 0; t < 10; t ++) {
+      stroke(redShift[t]);
+      line(x1+t*sliceX,  y1+t*sliceY, x1+(t + 1)*sliceX,  y1+(t + 1)*sliceY);
+    }
+  } else {
+    stroke(255);
+    line(x1,y1,x2,y2);
+  }
+    
+}
 }

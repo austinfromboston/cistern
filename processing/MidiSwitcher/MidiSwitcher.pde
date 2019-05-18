@@ -81,28 +81,6 @@ void setup()
 }
 
 
-void opcFanBoy(float evenOffset, float oddOffset, int ledStripCount, int ledPixelSpacing, String ip) {
- 
-  
-  float originX = width / 2;
-  float originY = 3 * height / 4;
-  
-  //start pointing at -X + PI/40
-  float zeroStripAngle = PI + PI/20;
-  
-  for(int ray = 0; ray < 19; ray++){
-    
-    float rayOffset = (ray % 2 == 0) ? evenOffset: oddOffset;
-    float rayAngle = zeroStripAngle + ray * PI / 20 ;
-    
-    OPC rayOpc = new OPC(this, ip, 7890 + ray, false);
-    
-    rayOpc.ledRay(0,ledStripCount, originX, originY, rayOffset, ledPixelSpacing, rayAngle);
-   
-  }
-}
-
-
 void opcLayout(LayoutLoader layout, int ledStripCount, int ledsPerStrip, String ip) {
 
     for(int ray = 0; ray < ledStripCount; ray++){
@@ -114,35 +92,8 @@ void opcLayout(LayoutLoader layout, int ledStripCount, int ledsPerStrip, String 
 }
 
 
-void opcFenceBoy(float evenOffset, float oddOffset, int ledStripCount, int ledPixelSpacing, String ip) {
-   
-
-  
-  float originX = width / 40;
-  float originY = height / 1.5;
-  
-  
-  
-  //start pointing at -X + PI/40
-  float zeroStripAngle = PI + PI / 2;
-  
-  
-  for(int ray = 0; ray < 19; ray++){
-    
-    originX += width / 20;
-    
-    float rayOffset = (ray % 2 == 0) ? evenOffset: oddOffset;
-    float rayAngle = zeroStripAngle ;
-    
-    OPC rayOpc = new OPC(this, ip, 7890 + ray, true);
-    
-    rayOpc.ledRay(0,ledStripCount, originX, originY, rayOffset, ledPixelSpacing, rayAngle);
-   
-  }
-}
-
   
 void draw()
 {
-  background(0);
+  
 }
