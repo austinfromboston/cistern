@@ -15,16 +15,14 @@ public class MidiProxy implements RawMidiListener {
   public MidiBus myBus; // The MidiBus
   
   public MidiProxy(String host, int port) {
+    this.parent = parent;
     this.host = host;
     this.port = port;
-    int midiDevice = 0;
-    println("the thing");
-    MidiBus.list(); // List all available Midi devices on STDOUT. This will show each device's index and name.
-    this.myBus = new MidiBus(this, midiDevice, 1); // Create a new MidiBus object
+    //this.myBus = new MidiBus(this, "LPD8", "LPD8"); // Create a new MidiBus object
   }
   public void rawMidiMessage(byte[] data) {
     try {
-      println("sending ", data.length);
+      //println("sending ", data.length);
 
       socket = new Socket(host, port);
       output = socket.getOutputStream();

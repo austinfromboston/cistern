@@ -38,7 +38,7 @@ public class MidiStatus implements SimpleMidiListener {
   public static final int DIAL_MIN = 0;
   public static final int DIAL_MAX = 127;
   public MidiBus myBus; // The MidiBus
-  
+  public MidiBus proxyBus; // The proxy MidiBus  
 
   
   public MidiStatus(PApplet parent) {
@@ -50,11 +50,12 @@ public class MidiStatus implements SimpleMidiListener {
     this.gainDial = 127;
     this.amplitudeDial = 0;
     
-    int midiDevice = 0;
     MidiBus.list(); // List all available Midi devices on STDOUT. This will show each device's index and name.
-    this.myBus = new MidiBus(this, midiDevice, 1, "dev22"); // Create a new MidiBus object
+    this.myBus = new MidiBus(this, "Akai LPD8 Wireless", "Akai LPD8 Wireless", "wireless"); // Create a new MidiBus object
     midiProxy = new MidiProxy("localhost", 3333);
-    this.myBus.addMidiListener(midiProxy);
+    this.proxyBus = new MidiBus(midiProxy, "LPD8", "LPD8", "LPD8"); 
+    //this.myBus.addInput("Akai LPD8 Wireless");
+    this.proxyBus.addMidiListener(midiProxy);
   }
   
   
