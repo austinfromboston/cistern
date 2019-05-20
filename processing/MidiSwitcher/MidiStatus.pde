@@ -52,7 +52,7 @@ public class MidiStatus implements SimpleMidiListener {
   public MidiStatus(PApplet parent) {
     this.parent = parent;
     this.hueDial = 0;
-    this.speedDial = 64;
+    this.speedDial = 66;
     this.sparklePadLevel = 0;
     this.sparklePadActive = false;
     this.gainDial = 0;
