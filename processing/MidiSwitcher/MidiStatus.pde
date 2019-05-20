@@ -23,7 +23,8 @@ int DIRECTION_DIAL = 5;
 int HUE_DIAL = 6;
 int SATURATION_DIAL = 7;
 int AMPLITUDE_DIAL = 8;
-
+int X_LOCATION_DIAL = 7;
+int Y_LOCATION_DIAL = 6;
 
 
 public class MidiStatus implements SimpleMidiListener {
@@ -46,11 +47,12 @@ public class MidiStatus implements SimpleMidiListener {
   private int[] padEffectLevels;
   public boolean padEffectActive;
   public int padEffectLevel;
+  public int[] dialSettings;
   
   public MidiStatus(PApplet parent) {
     this.parent = parent;
     this.hueDial = 0;
-    this.speedDial = 0;
+    this.speedDial = 64;
     this.sparklePadLevel = 0;
     this.sparklePadActive = false;
     this.gainDial = 0;
@@ -60,6 +62,8 @@ public class MidiStatus implements SimpleMidiListener {
     Arrays.fill(padEffectLevels, 0);
     this.padEffectsActive = new boolean[50];
     Arrays.fill(padEffectsActive, false);
+    this.dialSettings = new int[20];
+    Arrays.fill(dialSettings, 64);
     
     MidiBus.list(); // List all available Midi devices on STDOUT. This will show each device's index and name.
     this.myBus = new MidiBus(this, "Akai LPD8 Wireless", "Akai LPD8 Wireless", "wireless"); // Create a new MidiBus object
@@ -94,6 +98,7 @@ public class MidiStatus implements SimpleMidiListener {
         this.amplitudeDial = value;
         dialName = "java alpha";  
       }
+      this.dialSettings[number] = value;
       println("controllerChange dial " + dialName + " channel " + channel + ": number "+ number + ", value " + value);
 
   }

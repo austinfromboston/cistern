@@ -29,12 +29,14 @@ public class StarField extends Drawable {
   void draw() {
     if(drawing) {
       //background(0);
+      originX = map(this.midi.dialSettings[X_LOCATION_DIAL], 0, 127, 200, width - 200);
+      originY = map(this.midi.dialSettings[Y_LOCATION_DIAL], 0, 127, height / 4, 5 * height / 4);
       translate(originX, originY);
       float alpha = alphaAdj();
       
-      float speed = (midi != null) ? midi.speedDial : 22;
+      float speed = (midi != null) ? midi.speedDial - 64 : 22;
       
-      int numStars = (int) map(speed, 0, 127, stars.length / 3 , stars.length);
+      int numStars = (int) map(speed, -64, 64, stars.length / 3 , stars.length);
       
       for(int i = 0; i < numStars; i++ ){
         stars[i].move(speed);
@@ -81,7 +83,7 @@ public class Star {
  }
  
  public void move(float speed) {
-   float psi = map(speed,0,128,1, zPrime/4);
+   float psi = map(speed,-64,64, - zPrime/4, zPrime/4);
    zPrime = zPrime - psi;
    if (zPrime <= 1) resetInSpace();
  } 
@@ -106,6 +108,9 @@ public class Star {
    //ellipse(sx, sy, radius/8, radius/8);
    strokeWeight(radius*1);
    //line(px,py,sx,sy);
+   if(radius <= 0) {
+     resetInSpace();
+   }
 
    redShiftLine(px, py, sx, sy, alpha);
    
