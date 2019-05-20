@@ -1,4 +1,4 @@
-public class WarpDrive {
+public class WarpDrive extends Drawable {
 
   PApplet parent;
   MidiStatus midi;
@@ -22,7 +22,7 @@ public WarpDrive(
     float originX,
     float originY
   ) {
-
+      super(midi);
       this.parent = parent;
       this.parent.registerMethod("draw", this);
       this.midi = midi;
@@ -40,7 +40,7 @@ public WarpDrive(
 
 int randSeed = 0;
 
-void draw() {
+void draw(float alpha) {
   randSeed += frameCount;
   randomSeed(randSeed % 120); //Make a predictable pattern (useful for making the effect consistent)
 
