@@ -1,10 +1,9 @@
 import processing.core.PApplet;
 
-public class CircularOscilloscope implements Drawable {
+public class CircularOscilloscope extends Drawable {
   PApplet parent;
   BeatDetect beat;
   MidiStatus midi;
-  boolean drawing;
   AudioInput audioIn;
   FFT fft;
   float[] fftFilter;
@@ -39,7 +38,6 @@ public class CircularOscilloscope implements Drawable {
     this.minRadius = minRadius;
     this.maxRadius = maxRadius;
 
-    this.drawing = true;
     this.fft = new FFT(in.bufferSize(), in.sampleRate());
     this.fft.logAverages(22, 1);
     this.fftFilter = new float[in.bufferSize()];
@@ -193,8 +191,4 @@ public class CircularOscilloscope implements Drawable {
 
     }
   }
-  
-      public void setDrawing(boolean newDrawing) {
-      this.drawing = newDrawing;
-    }
 }

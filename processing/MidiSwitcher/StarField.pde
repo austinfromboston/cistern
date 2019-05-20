@@ -1,9 +1,8 @@
 import processing.core.PApplet;
 
-public class StarField implements Drawable {
+public class StarField extends Drawable {
   PApplet parent;
   MidiStatus midi;
-  boolean drawing;
   Star[] stars = new Star[1400];
   float originX;
   float originY;
@@ -21,8 +20,6 @@ public class StarField implements Drawable {
     this.originX = originX;
     this.originY = originY;
 
-    this.drawing = true;
-
     for(int i = 0; i < stars.length; i++ ){
       stars[i] = new Star();
     }
@@ -33,7 +30,6 @@ public class StarField implements Drawable {
   void draw() {
     if(drawing) {
       //background(0);
-      
       translate(originX, originY);
       
       float speed = (midi != null) ? midi.speedDial : 22;
@@ -50,10 +46,7 @@ public class StarField implements Drawable {
 
     }
   }
-  
-  public void setDrawing(boolean newDrawing) {
-    this.drawing = newDrawing;
-  }
+
 }
 
 public class Star {

@@ -50,7 +50,7 @@ public class MidiStatus implements SimpleMidiListener {
     this.sparklePadLevel = 0;
     this.sparklePadActive = false;
     this.gainDial = 127;
-    this.amplitudeDial = 0;
+    this.amplitudeDial = 127;
     this.patternSelectionDial = 64;
     
     MidiBus.list(); // List all available Midi devices on STDOUT. This will show each device's index and name.
@@ -81,6 +81,10 @@ public class MidiStatus implements SimpleMidiListener {
       if(number == PATTERN_SELECTOR_DIAL) {
         this.patternSelectionDial = value;
         dialName = "pattern";  
+      }
+      if(number == AMPLITUDE_DIAL) {
+        this.amplitudeDial = value;
+        dialName = "java alpha";  
       }
       println("controllerChange dial " + dialName + " channel " + channel + ": number "+ number + ", value " + value);
 

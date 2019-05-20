@@ -2,14 +2,13 @@ import processing.core.PApplet;
 import ddf.minim.analysis.*;
 import ddf.minim.*;
 
-public class BackgroundScroll implements Drawable {
+public class BackgroundScroll extends Drawable {
   PApplet parent;
   PImage scroll;
   BeatDetect beat;
   MidiStatus midi;
   float mid;
   int scrollSeam;
-  boolean drawing;
   
   public BackgroundScroll(PApplet parent, BeatDetect beat, MidiStatus midi) {
     this.parent = parent;
@@ -40,8 +39,5 @@ public class BackgroundScroll implements Drawable {
       this.scrollSeam = this.cycleMarker();  
     }  
   }
-  
-    public void setDrawing(boolean newDrawing) {
-      this.drawing = newDrawing;
-    }
+
 }

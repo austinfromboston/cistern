@@ -7,6 +7,8 @@ OPC opc;
 CircularOscilloscope circleScope;
 BackgroundScroll backgroundScroll;
 StarField starField;
+PerlinNoise perlinNoise;
+LayerCurtain layerCurtain;
 
 MidiStatus midiStatus;
 PImage splash;
@@ -72,7 +74,10 @@ void setup()
   backgroundScroll = new BackgroundScroll(this, beat, midiStatus);
   circleScope = new CircularOscilloscope(this, beat, in, midiStatus, evenOffset, int(evenOffset + ledPixelSpacing * ledStripCount * 1.8));
   starField = new StarField(this, midiStatus, originX, originY);
-  selectablePatterns = new Drawable[]{ backgroundScroll, circleScope, starField };
+  perlinNoise = new PerlinNoise(this, midiStatus);
+  perlinNoise.setup();
+  selectablePatterns = new Drawable[]{ backgroundScroll, circleScope, starField, perlinNoise };
+  layerCurtain = new LayerCurtain(this, midiStatus);
   
   layout = layout.flip(0,0,0).multiplied(115).offset(originX, 0, originY);
 
@@ -97,9 +102,9 @@ void opcLayout(LayoutLoader layout, int ledStripCount, int ledsPerStrip, String 
   
 void draw()
 {
-  background(0);
   int selectedPattern = round(map(midiStatus.patternSelectionDial, 0, 127, 0, selectablePatterns.length-1));
   for(int i = 0; i< selectablePatterns.length; i++) {
     selectablePatterns[i].setDrawing(i == selectedPattern);
   }
+  selectablePatterns[selectedPattern].addBackground();
 }
