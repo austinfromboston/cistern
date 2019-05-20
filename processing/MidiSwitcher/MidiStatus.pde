@@ -24,7 +24,7 @@ int HUE_DIAL = 6;
 int SATURATION_DIAL = 7;
 int AMPLITUDE_DIAL = 8;
 
-MidiProxy midiProxy;
+
 
 public class MidiStatus implements SimpleMidiListener {
   PApplet parent;
@@ -39,7 +39,8 @@ public class MidiStatus implements SimpleMidiListener {
   public static final int DIAL_MAX = 127;
   public MidiBus myBus; // The MidiBus
   public MidiBus proxyBus; // The proxy MidiBus  
-
+  public MidiEcho midiEcho; // echos allowed commands from the java board to Go
+  public MidiProxy midiProxy;  
   
   public MidiStatus(PApplet parent) {
     this.parent = parent;
@@ -53,9 +54,11 @@ public class MidiStatus implements SimpleMidiListener {
     MidiBus.list(); // List all available Midi devices on STDOUT. This will show each device's index and name.
     this.myBus = new MidiBus(this, "Akai LPD8 Wireless", "Akai LPD8 Wireless", "wireless"); // Create a new MidiBus object
     midiProxy = new MidiProxy("localhost", 3333);
+    midiEcho = new MidiEcho(midiProxy);
     this.proxyBus = new MidiBus(midiProxy, "LPD8", "LPD8", "LPD8"); 
     //this.myBus.addInput("Akai LPD8 Wireless");
     this.proxyBus.addMidiListener(midiProxy);
+    this.myBus.addMidiListener(midiEcho);
   }
   
   
@@ -76,6 +79,7 @@ public class MidiStatus implements SimpleMidiListener {
       println("controllerChange dial " + dialName + " channel " + channel + ": number "+ number + ", value " + value);
 
   }
+  
   
   public void noteOn(int channel, int pitch, int velocity) {
     String padName = "";
