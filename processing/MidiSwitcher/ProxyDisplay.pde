@@ -30,7 +30,10 @@ public class ProxyDisplay {
     //tint(255, 255);
     noStroke();
     //background(0);
-    
+    float proxyAlpha = map(this.midi.gainDial, 0, 127, 255, 0);
+    if(this.midi.padEffectActive) {
+      proxyAlpha = map(this.midi.padEffectLevel, 0, 127, 150, 255);
+    }
     for(int i=0; i < layout.points.size(); i++) {
       if(opcIn.opcColors != null) {
         int r = opcIn.opcColors[i * 3];
@@ -39,7 +42,7 @@ public class ProxyDisplay {
         if (i % 1000 == 0) {
           //println("color is", r, g,b );
         }
-        fill(color(r, g, b), 255);
+        fill(color(r, g, b), proxyAlpha);
       } else {
         fill(#AA33FF, 200);
       }

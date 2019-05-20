@@ -2,7 +2,6 @@ import processing.core.PApplet;
 
 public class StarField extends Drawable {
   PApplet parent;
-  MidiStatus midi;
   Star[] stars = new Star[1400];
   float originX;
   float originY;
@@ -14,9 +13,9 @@ public class StarField extends Drawable {
     float originX,
     float originY
   ) {
+    super(midi);
     this.parent = parent;
     this.parent.registerMethod("draw", this);
-    this.midi = midi;
     this.originX = originX;
     this.originY = originY;
 
@@ -31,6 +30,7 @@ public class StarField extends Drawable {
     if(drawing) {
       //background(0);
       translate(originX, originY);
+      float alpha = alphaAdj();
       
       float speed = (midi != null) ? midi.speedDial : 22;
       
@@ -38,7 +38,7 @@ public class StarField extends Drawable {
       
       for(int i = 0; i < numStars; i++ ){
         stars[i].move(speed);
-        stars[i].draw();
+        stars[i].draw(alpha);
       }
 
 
@@ -86,9 +86,9 @@ public class Star {
    if (zPrime <= 1) resetInSpace();
  } 
  
- public void draw() {
+ public void draw(float alpha) {
    
-   fill(255);
+   fill(255, alpha);
    noStroke();
    
    float sx = map(x / zPrime , 0, 1, 0, width/2);
@@ -107,11 +107,20 @@ public class Star {
    strokeWeight(radius*1);
    //line(px,py,sx,sy);
 
-   redShiftLine(px, py, sx, sy);
+   redShiftLine(px, py, sx, sy, alpha);
    
  }
  
- void redShiftLine(float x1, float y1, float x2, float y2) {
+ public color adjustColor(color c, float alpha) {
+    float red = red(c);
+    float green = green(c);
+    float blue = blue(c);
+    //float newAlpha = map(alpha, 0, 255, 0, alpha(c));
+    //return color(red, green, blue, newAlpha);
+    return color(red, green, blue, round(alpha));
+}
+ 
+ void redShiftLine(float x1, float y1, float x2, float y2, float alpha) {
   float deltaX = x2-x1;
   float deltaY = y2-y1;
   
@@ -121,11 +130,11 @@ public class Star {
     float sliceX = deltaX /10;
     float sliceY = deltaY /10;
     for (int t = 0; t < 10; t ++) {
-      stroke(redShift[t]);
+      stroke(redShift[t], alpha);
       line(x1+t*sliceX,  y1+t*sliceY, x1+(t + 1)*sliceX,  y1+(t + 1)*sliceY);
     }
   } else {
-    stroke(255);
+    stroke(color(255), alpha);
     line(x1,y1,x2,y2);
   }
     

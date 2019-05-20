@@ -3,7 +3,6 @@ import processing.core.PApplet;
 public class CircularOscilloscope extends Drawable {
   PApplet parent;
   BeatDetect beat;
-  MidiStatus midi;
   AudioInput audioIn;
   FFT fft;
   float[] fftFilter;
@@ -29,18 +28,18 @@ public class CircularOscilloscope extends Drawable {
     int minRadius,
     int maxRadius
   ) {
+    super(midi);
     this.parent = parent;
     this.parent.registerMethod("draw", this);
 
     this.beat = beat;
     this.audioIn = audioIn;
-    this.midi = midi;
     this.minRadius = minRadius;
     this.maxRadius = maxRadius;
 
-    this.fft = new FFT(in.bufferSize(), in.sampleRate());
+    this.fft = new FFT(audioIn.bufferSize(), audioIn.sampleRate());
     this.fft.logAverages(22, 1);
-    this.fftFilter = new float[in.bufferSize()];
+    this.fftFilter = new float[audioIn.bufferSize()];
 
   }
 
@@ -50,10 +49,10 @@ public class CircularOscilloscope extends Drawable {
 
   void draw() {
     if(drawing) {
-      beat.detect(in.mix);
+      beat.detect(audioIn.mix);
 
 
-      fft.forward(in.mix);
+      fft.forward(audioIn.mix);
       fft.setBand(0, 20);
       fft.setBand(3, 20);
       fft.setBand(4, 20);
@@ -69,7 +68,7 @@ public class CircularOscilloscope extends Drawable {
       }
 
 
-      int oscillAlpha = 70; // (int) map(midi.opcDial, 65, 128, 40 , 70);
+      //int oscillAlpha = 70; // (int) map(midi.opcDial, 65, 128, 40 , 70);
 
       blendMode(ADD);
       strokeWeight(6);
@@ -93,7 +92,7 @@ public class CircularOscilloscope extends Drawable {
         colorThree = pink;
       }
 
-      int bufferSize = in.bufferSize() -1 ;
+      int bufferSize = audioIn.bufferSize() -1 ;
       for(int i = 0; i < bufferSize; i++){
         float originX = width / 2;
         float originY = 3 * height / 4;
@@ -135,12 +134,12 @@ public class CircularOscilloscope extends Drawable {
         );
 
         int amplitude = 80;
-        float sample = r1 + in.mix.get(i) * amplitude;
-        float samplePrime = r1 + in.mix.get(i+1) * amplitude;
+        float sample = r1 + audioIn.mix.get(i) * amplitude;
+        float samplePrime = r1 + audioIn.mix.get(i+1) * amplitude;
         float angle =  PI * i / bufferSize;
         float anglePrime =  PI * (i + 1) / bufferSize;
 
-        stroke (colorOne, oscillAlpha);
+        stroke(adjustColor(colorOne));
 
         line(
           originX - cos(angle) * sample,
@@ -149,7 +148,7 @@ public class CircularOscilloscope extends Drawable {
           originY - sin(angle) * samplePrime
         );
 
-      stroke (colorTwo, oscillAlpha);
+      stroke(adjustColor(colorTwo));
 
       sample = r2 + fftFilter[i] * amplitude;
       samplePrime = r2 + fftFilter[i + 1] * amplitude;
@@ -162,10 +161,10 @@ public class CircularOscilloscope extends Drawable {
        );
        
       int amplitude3 = 120;
-      sample = r3 + in.mix.get(i) * amplitude3;
-      samplePrime = r3 + in.mix.get(i+1) * amplitude3;
+      sample = r3 + audioIn.mix.get(i) * amplitude3;
+      samplePrime = r3 + audioIn.mix.get(i+1) * amplitude3;
 
-      stroke (colorThree, oscillAlpha);
+      stroke(adjustColor(colorThree));
 
       line(
         originX - cos(angle) * sample,
@@ -174,7 +173,7 @@ public class CircularOscilloscope extends Drawable {
         originY - sin(angle) * samplePrime
       );
       
-      stroke (colorTwo, oscillAlpha);
+      stroke(adjustColor(colorTwo));
 
       sample = r4 + fftFilter[i] * amplitude3;
       samplePrime = r4 + fftFilter[i + 1] * amplitude3;

@@ -6,12 +6,11 @@ Particle[] particles_b;
 Particle[] particles_c;
 
 PApplet parent;
-MidiStatus midi;
 
 public PerlinNoise(PApplet parent, MidiStatus midi) {
-    this.parent = parent;
+  super(midi);  
+  this.parent = parent;
     this.parent.registerMethod("draw", this);
-    this.midi = midi;
 }
 void setup(){
   background(21, 8, 50);
@@ -35,17 +34,17 @@ void draw(){
         float radius = map(i,0,nums,1,2);
         float alpha = map(i,0,nums,0,250);
     
-        fill(69,33,124,alpha);
+        fill(69,33,124,alphaAdj(alpha));
         particles_a[i].move();
         particles_a[i].display(radius);
         particles_a[i].checkEdge();
     
-        fill(7,153,242,alpha);
+        fill(7,153,242,alphaAdj(alpha));
         particles_b[i].move();
         particles_b[i].display(radius);
         particles_b[i].checkEdge();
     
-        fill(255,255,255,alpha);
+        fill(255,255,255,alphaAdj(alpha));
         particles_c[i].move();
         particles_c[i].display(radius);
         particles_c[i].checkEdge();

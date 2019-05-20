@@ -71,13 +71,14 @@ void setup()
   beat = new BeatDetect();
   beat.detectMode(BeatDetect.FREQ_ENERGY);
 
-  backgroundScroll = new BackgroundScroll(this, beat, midiStatus);
+  backgroundScroll = new BackgroundScroll(this, in, beat, midiStatus);
   circleScope = new CircularOscilloscope(this, beat, in, midiStatus, evenOffset, int(evenOffset + ledPixelSpacing * ledStripCount * 1.8));
   starField = new StarField(this, midiStatus, originX, originY);
   perlinNoise = new PerlinNoise(this, midiStatus);
   perlinNoise.setup();
   selectablePatterns = new Drawable[]{ backgroundScroll, circleScope, starField, perlinNoise };
-  layerCurtain = new LayerCurtain(this, midiStatus);
+  //layerCurtain = new LayerCurtain(this, midiStatus);
+  //layerCurtain.setup();
   
   layout = layout.flip(0,0,0).multiplied(115).offset(originX, 0, originY);
 

@@ -42,6 +42,10 @@ public class MidiStatus implements SimpleMidiListener {
   public MidiBus proxyBus; // The proxy MidiBus  
   public MidiEcho midiEcho; // echos allowed commands from the java board to Go
   public MidiProxy midiProxy;  
+  private boolean[] padEffectsActive;
+  private int[] padEffectLevels;
+  public boolean padEffectActive;
+  public int padEffectLevel;
   
   public MidiStatus(PApplet parent) {
     this.parent = parent;
@@ -49,9 +53,13 @@ public class MidiStatus implements SimpleMidiListener {
     this.speedDial = 0;
     this.sparklePadLevel = 0;
     this.sparklePadActive = false;
-    this.gainDial = 127;
-    this.amplitudeDial = 127;
+    this.gainDial = 0;
+    this.amplitudeDial = 0;
     this.patternSelectionDial = 64;
+    this.padEffectLevels = new int[50];
+    Arrays.fill(padEffectLevels, 0);
+    this.padEffectsActive = new boolean[50];
+    Arrays.fill(padEffectsActive, false);
     
     MidiBus.list(); // List all available Midi devices on STDOUT. This will show each device's index and name.
     this.myBus = new MidiBus(this, "Akai LPD8 Wireless", "Akai LPD8 Wireless", "wireless"); // Create a new MidiBus object
@@ -90,6 +98,25 @@ public class MidiStatus implements SimpleMidiListener {
 
   }
   
+  public boolean isPadEffectActive() {
+    for(int j = 0; j< this.padEffectsActive.length; j++) {
+      if(this.padEffectsActive[j]) {
+        return true;
+      }
+    }
+    return false;
+  }
+  
+  public int padEffectMaxLevel() {
+    int maxLevel = 0;
+    for(int j = 0; j< this.padEffectLevels.length; j++) {
+      if(this.padEffectLevels[j] > maxLevel) {
+        maxLevel = this.padEffectLevels[j];
+      }
+    }
+    return maxLevel;
+  }
+  
   
   public void noteOn(int channel, int pitch, int velocity) {
     String padName = "";
@@ -98,11 +125,19 @@ public class MidiStatus implements SimpleMidiListener {
         this.sparklePadLevel = velocity;
         padName = "sparkle";
       }
+      this.padEffectsActive[channel] = true;
+      this.padEffectLevels[channel] = velocity;
+      this.padEffectActive = true;
+      this.padEffectLevel = velocity;
       println("noteOn pad " + padName + " channel " + channel + ": pitch "+ pitch + ", velocity " + velocity);
   }
 
   public void noteOff(int channel, int pitch, int velocity) {
       println("noteOff channel " + channel + ": velocity "+ velocity);
+      this.padEffectsActive[channel] = false;
+      this.padEffectLevels[channel] = 0;
+      this.padEffectActive = this.isPadEffectActive();
+      this.padEffectLevel = this.padEffectMaxLevel();
       if(pitch == SPARKLE_PAD) {
         this.sparklePadActive = false;
         this.sparklePadLevel = 0;
