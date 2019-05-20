@@ -1,6 +1,6 @@
 import processing.core.PApplet;
 
-public class CircularOscilloscope {
+public class CircularOscilloscope implements Drawable {
   PApplet parent;
   BeatDetect beat;
   MidiStatus midi;
@@ -15,6 +15,7 @@ public class CircularOscilloscope {
 
   color colorOne;
   color colorTwo;
+  color colorThree;
   color purple = color(128,5,128);
   color orange = color(255,128,5);
   color pink = color(255,5,128);
@@ -51,7 +52,6 @@ public class CircularOscilloscope {
 
   void draw() {
     if(drawing) {
-
       beat.detect(in.mix);
 
 
@@ -80,15 +80,19 @@ public class CircularOscilloscope {
       if(lowCount > 48) {
         colorOne = purple;
         colorTwo = orange;
+        colorThree = teal;
       } else if(lowCount > 32) {
         colorOne = orange;
         colorTwo = pink;
+        colorThree = purple;
       } else if(lowCount > 16){
         colorOne = pink;
         colorTwo = teal;
+        colorThree = orange;
       } else {
         colorOne = teal;
         colorTwo = purple;
+        colorThree = pink;
       }
 
       int bufferSize = in.bufferSize() -1 ;
@@ -110,6 +114,22 @@ public class CircularOscilloscope {
 
         float r2 = map(
           (growth + parent.width / 2) % width,
+          0,
+          width,
+          minRadius,
+          maxRadius
+        );
+
+        float r3 = map(
+          (growth + parent.width / 4) % width,
+          0,
+          width,
+          minRadius,
+          maxRadius
+        );
+
+        float r4 = map(
+          (growth + parent.width / 8) % width,
           0,
           width,
           minRadius,
@@ -142,10 +162,39 @@ public class CircularOscilloscope {
         originX - cos(anglePrime) * samplePrime,
         originY - sin(angle) * samplePrime
        );
+       
+      int amplitude3 = 120;
+      sample = r3 + in.mix.get(i) * amplitude3;
+      samplePrime = r3 + in.mix.get(i+1) * amplitude3;
+
+      stroke (colorThree, oscillAlpha);
+
+      line(
+        originX - cos(angle) * sample,
+        originY - sin(angle) * sample,
+        originX - cos(anglePrime) * samplePrime,
+        originY - sin(angle) * samplePrime
+      );
+      
+      stroke (colorTwo, oscillAlpha);
+
+      sample = r4 + fftFilter[i] * amplitude3;
+      samplePrime = r4 + fftFilter[i + 1] * amplitude3;
+
+      line(
+        originX - cos(angle) * sample,
+        originY - sin(angle) * sample,
+        originX - cos(anglePrime) * samplePrime,
+        originY - sin(angle) * samplePrime
+       );
     }
 
 
 
     }
   }
+  
+      public void setDrawing(boolean newDrawing) {
+      this.drawing = newDrawing;
+    }
 }

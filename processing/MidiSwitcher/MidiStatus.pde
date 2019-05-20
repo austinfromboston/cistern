@@ -32,6 +32,7 @@ public class MidiStatus implements SimpleMidiListener {
   public int hueDial;
   public int speedDial;
   public int gainDial;
+  public int patternSelectionDial;
   public int amplitudeDial;
   public boolean sparklePadActive;
   public int sparklePadLevel;
@@ -50,6 +51,7 @@ public class MidiStatus implements SimpleMidiListener {
     this.sparklePadActive = false;
     this.gainDial = 127;
     this.amplitudeDial = 0;
+    this.patternSelectionDial = 64;
     
     MidiBus.list(); // List all available Midi devices on STDOUT. This will show each device's index and name.
     this.myBus = new MidiBus(this, "Akai LPD8 Wireless", "Akai LPD8 Wireless", "wireless"); // Create a new MidiBus object
@@ -75,6 +77,10 @@ public class MidiStatus implements SimpleMidiListener {
       if(number == SPEED_DIAL) {
         this.speedDial = value;
         dialName = "speed";  
+      }
+      if(number == PATTERN_SELECTOR_DIAL) {
+        this.patternSelectionDial = value;
+        dialName = "pattern";  
       }
       println("controllerChange dial " + dialName + " channel " + channel + ": number "+ number + ", value " + value);
 

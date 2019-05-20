@@ -143,7 +143,7 @@ public class OPCListener implements Runnable {
     // Important for OPC arrays; faster startup, client continues
     // to run smoothly when mobile servers go in and out of range.
     for(;;) {
-        println("at very beginning of inifinte loop");
+        //println("at very beginning of inifinte loop");
       if(input == null) { // No OPC connection?
         try {              // Make one!
           pendingSocket = new ServerSocket(port);

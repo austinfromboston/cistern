@@ -2,14 +2,14 @@ import processing.core.PApplet;
 import ddf.minim.analysis.*;
 import ddf.minim.*;
 
-public class BackgroundScroll {
+public class BackgroundScroll implements Drawable {
   PApplet parent;
   PImage scroll;
   BeatDetect beat;
   MidiStatus midi;
   float mid;
   int scrollSeam;
- 
+  boolean drawing;
   
   public BackgroundScroll(PApplet parent, BeatDetect beat, MidiStatus midi) {
     this.parent = parent;
@@ -19,6 +19,7 @@ public class BackgroundScroll {
     this.midi = midi;
     this.scrollSeam = 0;
     this.scroll = loadImage("steamrainbow.jpg");
+    this.drawing = true;
   }
   
   public int cycleMarker() {
@@ -27,14 +28,20 @@ public class BackgroundScroll {
   }
   
   public void draw() {
-    this.mid = this.beat.isSnare() ? .3 : max(.1,this.mid * 0.96);
-    int scrollAlpha = (int) map(this.mid, 0, 1, 0 ,255);
-    //int scrollAlpha = 255;
-  
-    blendMode(ADD);
-    tint(255, scrollAlpha);
-    image(this.scroll, this.scrollSeam, 0, width, height);
-    image(this.scroll, this.scrollSeam - width, 0, width, height);
-    this.scrollSeam = this.cycleMarker();  
+    if (this.drawing) {
+      this.mid = this.beat.isSnare() ? .3 : max(.1,this.mid * 0.96);
+      int scrollAlpha = (int) map(this.mid, 0, 1, 0 ,255);
+      //int scrollAlpha = 255;
+    
+      blendMode(ADD);
+      tint(255, scrollAlpha);
+      image(this.scroll, this.scrollSeam, 0, width, height);
+      image(this.scroll, this.scrollSeam - width, 0, width, height);
+      this.scrollSeam = this.cycleMarker();  
+    }  
   }
+  
+    public void setDrawing(boolean newDrawing) {
+      this.drawing = newDrawing;
+    }
 }

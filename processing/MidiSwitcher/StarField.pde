@@ -1,6 +1,6 @@
 import processing.core.PApplet;
 
-public class StarField {
+public class StarField implements Drawable {
   PApplet parent;
   MidiStatus midi;
   boolean drawing;
@@ -31,9 +31,8 @@ public class StarField {
 
 
   void draw() {
-    
     if(drawing) {
-      background(0);
+      //background(0);
       
       translate(originX, originY);
       
@@ -50,6 +49,10 @@ public class StarField {
       translate(-originX, -originY);
 
     }
+  }
+  
+  public void setDrawing(boolean newDrawing) {
+    this.drawing = newDrawing;
   }
 }
 
@@ -134,4 +137,6 @@ public class Star {
   }
     
 }
+
+
 }
