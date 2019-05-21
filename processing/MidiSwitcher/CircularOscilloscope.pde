@@ -3,7 +3,7 @@ import processing.core.PApplet;
 public class CircularOscilloscope extends Drawable {
   BeatDetect beat;
   AudioInput audioIn;
-  FFT fft;
+  ddf.minim.analysis.FFT fft;
   float[] fftFilter;
 
   int secondsPerRadiusRefresh = 25;
@@ -33,7 +33,7 @@ public class CircularOscilloscope extends Drawable {
     this.minRadius = minRadius;
     this.maxRadius = maxRadius;
 
-    this.fft = new FFT(audioIn.bufferSize(), audioIn.sampleRate());
+    this.fft = new ddf.minim.analysis.FFT(audioIn.bufferSize(), audioIn.sampleRate());
     this.fft.logAverages(22, 1);
     this.fftFilter = new float[audioIn.bufferSize()];
 

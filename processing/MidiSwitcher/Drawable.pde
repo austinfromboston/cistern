@@ -8,6 +8,10 @@ public class Drawable {
     this.midi = midi;
   }
   
+  public void setup() {
+    colorMode(RGB, 255);
+  }
+  
   public void addBackground() {
     background(0);
   }
@@ -24,8 +28,6 @@ public class Drawable {
     return map(midi.amplitudeDial, 0, 127, maxAlpha, 0);
   }
   
-  public void beginDraw() {
-  }
   
     
   public boolean allowProxy() {

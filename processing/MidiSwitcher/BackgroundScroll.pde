@@ -1,8 +1,9 @@
 import processing.core.PApplet;
 import ddf.minim.analysis.*;
 import ddf.minim.*;
-
+  
 public class BackgroundScroll extends Drawable {
+
   PImage scroll;
   BeatDetect beat;
   AudioInput audioIn;

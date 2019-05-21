@@ -12,6 +12,7 @@ public PerlinNoise(PApplet parent, MidiStatus midi) {
 }
 
 void setup(){
+  super.setup();
   background(21, 8, 50);
   particles_a = new Particle[nums];
   particles_b = new Particle[nums];
@@ -62,9 +63,6 @@ void draw(){
     return false;
   }
 
-  public void beginDraw() {
-    background(0);
-  }
 
 }
 

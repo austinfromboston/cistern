@@ -1,5 +1,3 @@
-import ddf.minim.analysis.*;
-import ddf.minim.*;
 import themidibus.*;
 
 
@@ -11,15 +9,17 @@ PerlinNoise perlinNoise;
 GeoBubbles geoBubbles;
 WarpDrive warpDrive; 
 Colorwander colorWander;
+SoundBlock soundBlock;
+SoundWave soundWave;
 
 MidiStatus midiStatus;
 PImage splash;
 Minim minim;
 AudioInput in;
 //AudioOutput out;
-FFT fft;
-float[] fftFilter;
-float[] fftFilterLast;
+//FFT fft;
+//float[] fftFilter;
+//float[] fftFilterLast;
 
 LayoutLoader layout;
 OPCListener opcIn;
@@ -66,8 +66,8 @@ void setup()
   minim = new Minim(this);
   in = minim.getLineIn();
 
-  fft = new FFT(in.bufferSize(), in.sampleRate());
-  fftFilter = new float[fft.specSize()];
+  //fft = new FFT(in.bufferSize(), in.sampleRate());
+  //fftFilter = new float[fft.specSize()];
 
   midiStatus = new MidiStatus(this);
   layout = new LayoutLoader();
@@ -80,13 +80,14 @@ void setup()
   circleScope = new CircularOscilloscope(this, beat, in, midiStatus, evenOffset, int(evenOffset + ledPixelSpacing * ledStripCount * 1.8));
   starField = new StarField(this, midiStatus, originX, originY);
   perlinNoise = new PerlinNoise(this, midiStatus);
-  perlinNoise.setup();
   colorWander = new Colorwander(this, midiStatus);
-  colorWander.setup();
   
   geoBubbles = new GeoBubbles(this, midiStatus);
-  //warpDrive = new WarpDrive(this, midiStatus, originX, originY);
-  selectablePatterns = new Drawable[]{ backgroundScroll, circleScope, starField, colorWander, geoBubbles, perlinNoise}; //,  warpDrive };
+  soundBlock = new SoundBlock(this, midiStatus);
+  soundWave = new SoundWave(this, midiStatus);
+  warpDrive = new WarpDrive(this, midiStatus, originX, originY);
+  
+  selectablePatterns = new Drawable[]{ backgroundScroll, circleScope, starField, colorWander, geoBubbles, soundBlock, soundWave, perlinNoise, warpDrive };
 
   
   layout = layout.flip(0,0,0).multiplied(115).offset(originX, 0, originY);
@@ -118,7 +119,7 @@ void draw()
   }
   this.allowProxy = selectablePatterns[selectedPattern].allowProxy();
   if(lastPattern != selectedPattern) {
-    selectablePatterns[selectedPattern].beginDraw();
+    selectablePatterns[selectedPattern].setup();
     lastPattern = selectedPattern;
   }
   //System.gc();

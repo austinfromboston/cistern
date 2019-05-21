@@ -10,10 +10,6 @@ public class GeoBubbles extends Drawable {
     super(parent, midi);
   }
   
-  void setup() {
-    //size(540, 540);
-  }
-  
   void draw() {
     if (this.drawing) {
       noStroke();
@@ -34,7 +30,7 @@ public class GeoBubbles extends Drawable {
           float x2 = map(cos(-theta+offSet), 0, 1, 0, 25); // map x position
           float y2 = map(cos(-theta+offSet), 0, 1, 25, 0); // map y position
           float sz2 = map(sin(-theta+offSet), 0, 1, 15, 45); // map size off the ellipse
-          fill(150-(x/2) + colorAdjustment, 50+(x/6) + colorAdjustment, 350-(y/2) - colorAdjustment); // color with gradient created
+          fill(150-(x/2) + colorAdjustment, 50+(x/6) + colorAdjustment, 350-(y/2) - colorAdjustment, alphaAdj()); // color with gradient created
     
           ellipse(x+x2, y-y2, sz2, sz2);
         }
