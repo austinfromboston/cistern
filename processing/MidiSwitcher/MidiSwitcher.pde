@@ -8,7 +8,9 @@ CircularOscilloscope circleScope;
 BackgroundScroll backgroundScroll;
 StarField starField;
 PerlinNoise perlinNoise;
-LayerCurtain layerCurtain;
+GeoBubbles geoBubbles;
+WarpDrive warpDrive; 
+Colorwander colorWander;
 
 MidiStatus midiStatus;
 PImage splash;
@@ -48,6 +50,9 @@ float size = 100;
   int evenOffset = 8;
   int oddOffset = 12;
   
+  int lastPattern;
+  boolean allowProxy;
+  
 Drawable[] selectablePatterns;
 
 void setup()
@@ -76,9 +81,13 @@ void setup()
   starField = new StarField(this, midiStatus, originX, originY);
   perlinNoise = new PerlinNoise(this, midiStatus);
   perlinNoise.setup();
-  selectablePatterns = new Drawable[]{ backgroundScroll, circleScope, starField, perlinNoise };
-  //layerCurtain = new LayerCurtain(this, midiStatus);
-  //layerCurtain.setup();
+  colorWander = new Colorwander(this, midiStatus);
+  colorWander.setup();
+  
+  geoBubbles = new GeoBubbles(this, midiStatus);
+  //warpDrive = new WarpDrive(this, midiStatus, originX, originY);
+  selectablePatterns = new Drawable[]{ backgroundScroll, circleScope, starField, colorWander, geoBubbles, perlinNoise}; //,  warpDrive };
+
   
   layout = layout.flip(0,0,0).multiplied(115).offset(originX, 0, originY);
 
@@ -107,5 +116,11 @@ void draw()
   for(int i = 0; i< selectablePatterns.length; i++) {
     selectablePatterns[i].setDrawing(i == selectedPattern);
   }
+  this.allowProxy = selectablePatterns[selectedPattern].allowProxy();
+  if(lastPattern != selectedPattern) {
+    selectablePatterns[selectedPattern].beginDraw();
+    lastPattern = selectedPattern;
+  }
+  //System.gc();
   selectablePatterns[selectedPattern].addBackground();
 }

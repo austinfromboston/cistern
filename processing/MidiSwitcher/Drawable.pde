@@ -1,7 +1,10 @@
 public class Drawable {
   public boolean drawing = true;
   MidiStatus midi;
-  public Drawable(MidiStatus midi) {
+  PApplet parent;
+  public Drawable(PApplet parent, MidiStatus midi) {
+    this.parent = parent;
+    this.parent.registerMethod("draw", this);
     this.midi = midi;
   }
   
@@ -16,8 +19,17 @@ public class Drawable {
   public float alphaAdj() {
     return alphaAdj(255);
   }
+  
   public float alphaAdj(float maxAlpha) {
     return map(midi.amplitudeDial, 0, 127, maxAlpha, 0);
+  }
+  
+  public void beginDraw() {
+  }
+  
+    
+  public boolean allowProxy() {
+    return true;
   }
   
   public color adjustColor(color c) {

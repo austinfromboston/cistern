@@ -8,10 +8,9 @@ Particle[] particles_c;
 PApplet parent;
 
 public PerlinNoise(PApplet parent, MidiStatus midi) {
-  super(midi);  
-  this.parent = parent;
-    this.parent.registerMethod("draw", this);
+  super(parent, midi);  
 }
+
 void setup(){
   background(21, 8, 50);
   particles_a = new Particle[nums];
@@ -57,6 +56,14 @@ void draw(){
   public void addBackground() {
     // this pattern depends on prior frames being preserved
     //background(0);
+  }
+  
+  public boolean allowProxy() {
+    return false;
+  }
+
+  public void beginDraw() {
+    background(0);
   }
 
 }

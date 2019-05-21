@@ -13,9 +13,7 @@ public class StarField extends Drawable {
     float originX,
     float originY
   ) {
-    super(midi);
-    this.parent = parent;
-    this.parent.registerMethod("draw", this);
+    super(parent, midi);
     this.originX = originX;
     this.originY = originY;
 

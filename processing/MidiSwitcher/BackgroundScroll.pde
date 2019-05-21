@@ -3,7 +3,6 @@ import ddf.minim.analysis.*;
 import ddf.minim.*;
 
 public class BackgroundScroll extends Drawable {
-  PApplet parent;
   PImage scroll;
   BeatDetect beat;
   AudioInput audioIn;
@@ -11,15 +10,12 @@ public class BackgroundScroll extends Drawable {
   int scrollSeam;
   
   public BackgroundScroll(PApplet parent, AudioInput audioIn, BeatDetect beat, MidiStatus midi) {
-    super(midi);
-    this.parent = parent;
-    this.parent.registerMethod("draw", this);
+    super(parent, midi);
     this.beat = beat;
     this.mid = 0.7;
     this.scrollSeam = 0;
     this.audioIn = audioIn;
     this.scroll = loadImage("steamrainbow.jpg");
-    this.drawing = true;
   }
   
   public int cycleMarker() {

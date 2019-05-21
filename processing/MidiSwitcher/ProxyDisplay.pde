@@ -23,9 +23,9 @@ public class ProxyDisplay {
   }
   
   void draw() {
-    //if(this.midi.opcDial > 120) {
-    
-    //}
+    if(!allowProxy) {
+      return;
+    }
     blendMode(ADD);
     //tint(255, 255);
     noStroke();

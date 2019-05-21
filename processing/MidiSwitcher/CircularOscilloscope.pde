@@ -1,7 +1,6 @@
 import processing.core.PApplet;
 
 public class CircularOscilloscope extends Drawable {
-  PApplet parent;
   BeatDetect beat;
   AudioInput audioIn;
   FFT fft;
@@ -28,10 +27,7 @@ public class CircularOscilloscope extends Drawable {
     int minRadius,
     int maxRadius
   ) {
-    super(midi);
-    this.parent = parent;
-    this.parent.registerMethod("draw", this);
-
+    super(parent, midi);
     this.beat = beat;
     this.audioIn = audioIn;
     this.minRadius = minRadius;

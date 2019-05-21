@@ -2,10 +2,8 @@ import processing.core.PApplet;
 import ddf.minim.analysis.*;
 import ddf.minim.*;
 
-public class VenusPattern {
-  PApplet parent;
+public class VenusPattern extends Drawable {
   BeatDetect beat;
-  MidiStatus midi;
   PImage venus;
   float low1;
   float low2;
@@ -13,10 +11,8 @@ public class VenusPattern {
   float low4;
   
   public VenusPattern(PApplet parent, BeatDetect beat, MidiStatus midi) {
-    this.parent = parent;
-    this.parent.registerMethod("draw", this);
+    super(parent, midi);
     this.beat = beat;
-    this.midi = midi;
     this.venus = loadImage("blue_venus.jpg");
   }
   
