@@ -51,6 +51,7 @@ public class MidiStatus implements SimpleMidiListener {
   
   public MidiStatus(PApplet parent) {
     this.parent = parent;
+    this.parent.registerMethod("keyEvent", this);
     this.hueDial = 0;
     this.speedDial = 66;
     this.sparklePadLevel = 0;
@@ -101,6 +102,21 @@ public class MidiStatus implements SimpleMidiListener {
       this.dialSettings[number] = value;
       println("controllerChange dial " + dialName + " channel " + channel + ": number "+ number + ", value " + value);
 
+  }
+  
+  public void keyEvent(KeyEvent e) {
+    //if (e.getKey() != KeyEvent.PRESS) { return; }
+    println("i see key", e.getKeyCode());
+    if (e.getKeyCode() == UP) {
+      dialSettings[Y_LOCATION_DIAL] += 2; 
+    }      
+    if (e.getKeyCode() == DOWN) {
+      dialSettings[Y_LOCATION_DIAL] -= 2; 
+    }
+    if (e.getKeyCode() == 65) {
+      dialSettings[PATTERN_SELECTOR_DIAL] += 5; 
+
+    }
   }
   
   public boolean isPadEffectActive() {

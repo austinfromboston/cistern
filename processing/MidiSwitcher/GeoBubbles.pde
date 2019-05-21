@@ -15,7 +15,8 @@ public class GeoBubbles extends Drawable {
       noStroke();
   
       pushMatrix();
-      translate(width/2, height/2); // translate 0,0 to center
+      dialOrigins(1);
+      translate(originX, originY); // translate 0,0 to center
     
       float frameVelocity = map(this.midi.dialSettings[SPEED_DIAL], 0, 127, 300, 20);
       t = (float)frameCount/frameVelocity;

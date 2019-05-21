@@ -49,10 +49,11 @@ public class Colorwander extends Drawable {
   void draw() {
     if(!this.drawing) { return; }
     pushMatrix();
-    translate(width/2, height/2);
+    dialOrigins();
+    translate(originX, originY);
     rotation-=rot*sin(1);
     rotate(rotation);
-    rot = map(this.midi.dialSettings[X_LOCATION_DIAL], 0, 127, -0.05, 0.05); 
+    rot = map(this.midi.dialSettings[DIRECTION_DIAL], 0, 127, -0.05, 0.05); 
     if (keyPressed) {
       if (keyCode == LEFT) {
         rot -= 0.001;
@@ -70,7 +71,7 @@ public class Colorwander extends Drawable {
     {noStroke();}
     if (x == true)
     {stroke(0);}
-    speed = Math.min(0.5, Math.max(speed - map(this.midi.dialSettings[Y_LOCATION_DIAL], -64, 64, 0.002, -0.0002), -0.5));
+    speed = Math.min(0.5, Math.max(speed - map(this.midi.dialSettings[APERTURE_DIAL], -64, 64, 0.002, -0.0002), -0.5));
     float speedAdjustment = this.speed + map(this.midi.dialSettings[SPEED_DIAL] - this.speedSetting, -64, 64, 0.001, 0.2);
     for (int i = 0; i<p.length; i++) {
       p[i].draw(speedAdjustment, alphaAdj());

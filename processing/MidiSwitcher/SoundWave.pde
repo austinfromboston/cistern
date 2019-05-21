@@ -41,6 +41,7 @@ void mousePressed() {
 
 void draw() {
   if(!this.drawing) { return; }
+  dialOrigins(1.2);
 //------random clock-------
   if(cont > cont1){
     rand = random(60);
@@ -70,7 +71,7 @@ void draw() {
       micLevel = amp.analyze();
       println("wave seeing ", micLevel);
       strokeWeight((100*micLevel+5) * strokeAdj);
-      h = ((rand4*micLevel)+50)*sin(w/(rand)) * pow(abs(sin(w * randW + frameCount * randS)), 5) + height/2;
+      h = ((rand4*micLevel)+50)*sin(w/(rand)) * pow(abs(sin(w * randW + frameCount * randS)), 5) + originY;
       curveVertex(w,h);
     }
   endShape();
@@ -80,7 +81,7 @@ void draw() {
       for(int w = -20; w < width + 20; w += 5){
       micLevel = amp.analyze();
       strokeWeight((100*micLevel+5)* strokeAdj);
-      h = (rand5*micLevel+50)*sin(w/(rand2)) * pow(abs(sin(w * randW + frameCount * randS)), 5) + height/2;
+      h = (rand5*micLevel+50)*sin(w/(rand2)) * pow(abs(sin(w * randW + frameCount * randS)), 5) + originY;
       curveVertex(w,h);
     }
   endShape();
@@ -91,7 +92,7 @@ void draw() {
       micLevel = amp.analyze();
       //println(micLevel);
       strokeWeight((100*micLevel+5)* strokeAdj);
-      h = (rand6*micLevel+50)*sin(w/(rand3)) * pow(abs(sin(w * randW + frameCount * randS)), 5) + height/2;
+      h = (rand6*micLevel+50)*sin(w/(rand3)) * pow(abs(sin(w * randW + frameCount * randS)), 5) + originY;
       curveVertex(w,h);
     }
   endShape();

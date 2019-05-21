@@ -45,6 +45,7 @@ public class SoundBlock extends Drawable {
   void draw() {
     if (!this.drawing) { return; }
     a -= 0.1;
+    dialOrigins(1);
     //fft.forward(audioIn);
     //float[] spectrum = fft.analyze();
     pushMatrix();
@@ -61,8 +62,8 @@ public class SoundBlock extends Drawable {
         float zm = z*17 -8.5;
         float zt = z*17 +8.5;
         
-        float halfw = width/2;
-        float halfh = height/2;
+        float halfw = originX;
+        float halfh = originY;
             
         int isox1 = int(xm - zm + halfw);
         int isoy1 = int((xm + zm) * 0.5 + halfh);

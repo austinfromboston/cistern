@@ -60,8 +60,6 @@ void setup()
   size(1000, 700, P3D);
 
   String ip = "localhost";
-  float originX = width / 2;
-  float originY = 3 * height / 4;
   
   minim = new Minim(this);
   in = minim.getLineIn();
@@ -78,19 +76,21 @@ void setup()
 
   backgroundScroll = new BackgroundScroll(this, in, beat, midiStatus);
   circleScope = new CircularOscilloscope(this, beat, in, midiStatus, evenOffset, int(evenOffset + ledPixelSpacing * ledStripCount * 1.8));
-  starField = new StarField(this, midiStatus, originX, originY);
+  starField = new StarField(this, midiStatus);
   perlinNoise = new PerlinNoise(this, midiStatus);
   colorWander = new Colorwander(this, midiStatus);
-  
+  //colorWander.setup();
   geoBubbles = new GeoBubbles(this, midiStatus);
   soundBlock = new SoundBlock(this, midiStatus);
   soundWave = new SoundWave(this, midiStatus);
-  warpDrive = new WarpDrive(this, midiStatus, originX, originY);
+  warpDrive = new WarpDrive(this, midiStatus);
   
   selectablePatterns = new Drawable[]{ backgroundScroll, circleScope, starField, colorWander, geoBubbles, soundBlock, soundWave, perlinNoise, warpDrive };
+  //selectablePatterns = new Drawable[]{ colorWander };
 
-  
-  layout = layout.flip(0,0,0).multiplied(115).offset(originX, 0, originY);
+  float proxyOriginX = width /2;
+  float proxyOriginY = 3 * height / 4;
+  layout = layout.flip(0,0,0).multiplied(115).offset(proxyOriginX, 0, proxyOriginY);
 
   opcIn = new OPCListener(8890, layout.points.size());
   opcDisplay = new ProxyDisplay(this, opcIn, midiStatus, layout);
@@ -113,7 +113,7 @@ void opcLayout(LayoutLoader layout, int ledStripCount, int ledsPerStrip, String 
   
 void draw()
 {
-  int selectedPattern = round(map(midiStatus.patternSelectionDial, 0, 127, 0, selectablePatterns.length-1));
+  int selectedPattern = round(map(midiStatus.dialSettings[PATTERN_SELECTOR_DIAL], 0, 127, 0, selectablePatterns.length-1));
   for(int i = 0; i< selectablePatterns.length; i++) {
     selectablePatterns[i].setDrawing(i == selectedPattern);
   }

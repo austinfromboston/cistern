@@ -1,7 +1,5 @@
 public class WarpDrive extends Drawable {
 
-  float originX;
-  float originY;
 
 
 int n = 500; //number of warp stars
@@ -17,13 +15,10 @@ float[] thick;
 
 public WarpDrive(
     PApplet parent,
-    MidiStatus midi,
-    float originX,
-    float originY
+    MidiStatus midi
+
   ) {
       super(parent, midi);
-      this.originX = originX;
-      this.originY = originY;
 
   angle = new float[n];  //their angle versus the center of the screen
   dist = new float[n];   //distance from center of the screen
@@ -44,7 +39,7 @@ void draw() {
   if (!this.drawing) { return; }
   randSeed += frameCount;
   randomSeed(randSeed % 120); //Make a predictable pattern (useful for making the effect consistent)
-
+  dialOrigins();
   //Fade the tails drawn by the stars to black:
   colorMode(RGB);
   fill(0,50);
@@ -54,7 +49,7 @@ void draw() {
   //Draw the warp stars:
   for(int i = 0; i < n; i++) {
     pushMatrix();
-    translate(width/2,height/2);
+    translate(originX,originY);
     rotate(angle[i]);
     translate(dist[i],0);
     stroke(starcolor(bright[i]));

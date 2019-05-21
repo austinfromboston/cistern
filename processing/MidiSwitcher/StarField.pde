@@ -2,25 +2,20 @@ import processing.core.PApplet;
 
 public class StarField extends Drawable {
   PApplet parent;
-  Star[] stars = new Star[1400];
-  float originX;
-  float originY;
+  Star[] stars;
 
 
-  public StarField(
-    PApplet parent,
-    MidiStatus midi,
-    float originX,
-    float originY
-  ) {
+  public StarField(PApplet parent, MidiStatus midi) {
     super(parent, midi);
-    this.originX = originX;
-    this.originY = originY;
+  }
+  
+  void setup() {
+    colorMode(RGB, 255);
 
+    stars = new Star[1400];
     for(int i = 0; i < stars.length; i++ ){
       stars[i] = new Star();
     }
-
   }
 
 
