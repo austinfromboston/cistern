@@ -11,6 +11,7 @@ WarpDrive warpDrive;
 Colorwander colorWander;
 SoundBlock soundBlock;
 SoundWave soundWave;
+Eyelid eyelid;
 
 MidiStatus midiStatus;
 PImage splash;
@@ -93,7 +94,7 @@ void setup()
   //layout = layout.flip(0,0,0).multiplied(115).offset(proxyOriginX, 0, proxyOriginY);
   layout = layout.flip(0,0,0).flipX(0).multiplied(115).offset(proxyOriginX, 0, proxyOriginY);
 
-
+  eyelid = new Eyelid(this, midiStatus);
   opcIn = new OPCListener(8890, layout.points.size());
   opcDisplay = new ProxyDisplay(this, opcIn, midiStatus, layout);
   
