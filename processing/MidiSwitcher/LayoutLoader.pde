@@ -34,6 +34,13 @@ public class Coordinate {
       centerZ - this.z
     );
   }
+ public Coordinate flipX(float centerX) {
+        return new Coordinate(
+      centerX - this.x,
+      this.y,
+      this.z
+    );
+  }
 }
 
 public class LayoutLoader {
@@ -58,7 +65,14 @@ public class LayoutLoader {
     }
     return new LayoutLoader(updatedPoints);
   }
-  
+
+  public LayoutLoader flipX(float centerX) {
+    ArrayList updatedPoints = new ArrayList<Coordinate>();
+    for(int i=0; i < this.points.size(); i++) {
+      updatedPoints.add(this.points.get(i).flipX(centerX));
+    }
+    return new LayoutLoader(updatedPoints);
+  }
   public LayoutLoader multiplied(float multiplier) {
     ArrayList<Coordinate> updatedPoints = new ArrayList<Coordinate>();
     for(int i=0; i < this.points.size(); i++) {
