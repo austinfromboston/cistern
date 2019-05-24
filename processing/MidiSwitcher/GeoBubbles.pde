@@ -22,8 +22,8 @@ public class GeoBubbles extends Drawable {
       t = (float)frameCount/frameVelocity;
       theta = TWO_PI*t;
     
-      float offsetAdjustment = map(this.midi.dialSettings[SATURATION_DIAL], 0, 127, 10, 90);
-      float colorAdjustment = map(this.midi.dialSettings[HUE_DIAL], 0, 127, 0, 200);
+      float offsetAdjustment = map(this.midi.dialSettings[APERTURE_DIAL], 0, 127, 10, 90);
+      float colorAdjustment = map(this.midi.dialSettings[DIRECTION_DIAL], 0, 127, 0, 200);
       for ( int x= -375; x <= 375; x += 25) {
         for (int y= -200; y <= 155; y += 50) {
           float offSet = round(offsetAdjustment)*x+y+y;   // play with offSet to change map below

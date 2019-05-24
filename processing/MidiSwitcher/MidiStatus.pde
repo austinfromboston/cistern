@@ -67,10 +67,10 @@ public class MidiStatus implements SimpleMidiListener {
     Arrays.fill(dialSettings, 64);
     
     MidiBus.list(); // List all available Midi devices on STDOUT. This will show each device's index and name.
-    this.myBus = new MidiBus(this, "Akai LPD8 Wireless", "Akai LPD8 Wireless", "wireless"); // Create a new MidiBus object
+    this.myBus = new MidiBus(this, "Wireless [hw:1,0,0]", "Wireless [hw:1,0,0]", "wireless"); // Create a new MidiBus object
     midiProxy = new MidiProxy("localhost", 3333);
     midiEcho = new MidiEcho(midiProxy);
-    this.proxyBus = new MidiBus(midiProxy, "LPD8", "LPD8", "LPD8"); 
+    this.proxyBus = new MidiBus(midiProxy, "LPD8 [hw:2,0,0]", "LPD8 [hw:2,0,0]", "LPD8"); 
     //this.myBus.addInput("Akai LPD8 Wireless");
     this.proxyBus.addMidiListener(midiProxy);
     this.myBus.addMidiListener(midiEcho);
@@ -106,7 +106,7 @@ public class MidiStatus implements SimpleMidiListener {
   
   public void keyEvent(KeyEvent e) {
     //if (e.getKey() != KeyEvent.PRESS) { return; }
-    println("i see key", e.getKeyCode());
+    //println("i see key", e.getKeyCode());
     if (e.getKeyCode() == UP) {
       dialSettings[Y_LOCATION_DIAL] += 2; 
     }      

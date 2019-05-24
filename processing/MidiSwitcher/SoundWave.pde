@@ -69,7 +69,7 @@ void draw() {
       stroke(color(255,0,0), alphaAdj());
     for(int w = -20; w < width + 20; w += 5){
       micLevel = amp.analyze();
-      println("wave seeing ", micLevel);
+      //println("wave seeing ", micLevel);
       strokeWeight((100*micLevel+5) * strokeAdj);
       h = ((rand4*micLevel)+50)*sin(w/(rand)) * pow(abs(sin(w * randW + frameCount * randS)), 5) + originY;
       curveVertex(w,h);
