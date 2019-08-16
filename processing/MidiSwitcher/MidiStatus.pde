@@ -128,6 +128,10 @@ public class MidiStatus implements SimpleMidiListener {
       dialSettings[PATTERN_SELECTOR_DIAL] += 5; 
 
     }
+        if (e.getKeyCode() == 66) {
+      dialSettings[PATTERN_SELECTOR_DIAL] -= 5; 
+
+    }
   }
   
   public boolean isPadEffectActive() {

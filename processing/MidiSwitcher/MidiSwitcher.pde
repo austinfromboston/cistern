@@ -17,6 +17,7 @@ MidiStatus midiStatus;
 PImage splash;
 Minim minim;
 AudioInput in;
+SyphonSender syphonSender;
 //AudioOutput out;
 //FFT fft;
 //float[] fftFilter;
@@ -85,7 +86,7 @@ void setup()
   soundBlock = new SoundBlock(this, midiStatus);
   soundWave = new SoundWave(this, midiStatus);
   warpDrive = new WarpDrive(this, midiStatus);
-  
+
   selectablePatterns = new Drawable[]{ backgroundScroll, circleScope, starField, colorWander, geoBubbles, soundBlock, soundWave, perlinNoise, warpDrive };
   //selectablePatterns = new Drawable[]{ colorWander };
 
@@ -97,7 +98,7 @@ void setup()
   eyelid = new Eyelid(this, midiStatus);
   opcIn = new OPCListener(8890, layout.points.size());
   opcDisplay = new ProxyDisplay(this, opcIn, midiStatus, layout);
-  
+  syphonSender = new SyphonSender(this);  
   opcLayout(layout, 37, 120, ip);
 }
 
