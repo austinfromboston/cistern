@@ -2,6 +2,7 @@ import themidibus.*;
 
 
 OPC opc;
+
 CircularOscilloscope circleScope;
 BackgroundScroll backgroundScroll;
 StarField starField;
@@ -113,6 +114,16 @@ void opcLayout(LayoutLoader layout, int ledStripCount, int ledsPerStrip, String 
     }
 }
 
+
+void dmxLayout(LayoutLoader layout, int ledStripCount, int ledsPerStrip, String ip) {
+
+    for(int ray = 0; ray < ledStripCount; ray++){
+      OPC rayOpc = new OPC(this, ip, 7890 + ray, false);
+      
+      rayOpc.ledRayLayout(0, ray, layout,ledsPerStrip);
+      
+    }
+}
 
   
 void draw()
