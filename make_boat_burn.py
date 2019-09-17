@@ -38,7 +38,7 @@ def row(start, direction, count):
 FT_TO_M = 0.3048
 IN_TO_M = 0.0254
 
-LEDS_PER_METER = 60
+LEDS_PER_METER = 1
 LEDS_PER_IN = LEDS_PER_METER * IN_TO_M
 METERS_PER_LED = 1 / LEDS_PER_METER
 INCHES_PER_LED = METERS_PER_LED / IN_TO_M
@@ -68,11 +68,20 @@ class LedStrip(object):
         return [(self.x_loc + (i*x_increment), self.y_loc + (i*y_increment), 0) for i in led_range]
 
 
+# strips = [
+#         LedStrip(0, 0, 0, -.999, 120),
+#         LedStrip(0, -1.9832, .999, 0, 60),
+#         LedStrip(.982, -1.9832, 0, .999, 120)
+#         ];
+
 strips = [
-        LedStrip(0, 0, 0, -1),
-        LedStrip(0, -2, 1, 0, 40),
-        LedStrip(40 * METERS_PER_LED, -2, 0, 1)
-        ];
+         LedStrip(0, 0, 0, -1, 50),
+         LedStrip(0, 0, 0, -1, 50),
+         LedStrip(0, 0, 0, -1, 50),
+         LedStrip(5, 0, 0, -1, 50),
+         LedStrip(5, 0, 0, -1, 50)
+         LedStrip(5, 0, 0, -1, 50)
+         ]
 
 points = []
 
