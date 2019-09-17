@@ -1,8 +1,9 @@
 /*
- * Simple Open Pixel Control client for Processing,
+ * Arnet based Control client for Processing,
  * designed to sample each LED's color from some point on the canvas.
  *
- * Micah Elizabeth Scott, 2013
+ * Micah Elizabeth Scott, 2013 (for Open Pixel Control)
+ * Mike Stevenson, 2019 (for ArtNetClient)
  * This file is released into the public domain.
  */
 
