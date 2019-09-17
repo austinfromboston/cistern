@@ -43,11 +43,13 @@ public class MidiStatus implements SimpleMidiListener {
   public MidiBus proxyBus; // The proxy MidiBus  
   public MidiEcho midiEcho; // echos allowed commands from the java board to Go
   public MidiProxy midiProxy;  
+  public MidiDials midiDials;
   private boolean[] padEffectsActive;
   private int[] padEffectLevels;
   public boolean padEffectActive;
   public int padEffectLevel;
   public int[] dialSettings;
+  public int golangApertureDial = 127;
   
   public MidiStatus(PApplet parent) {
     this.parent = parent;
@@ -56,8 +58,8 @@ public class MidiStatus implements SimpleMidiListener {
     this.speedDial = 66;
     this.sparklePadLevel = 0;
     this.sparklePadActive = false;
-    this.gainDial = 0;
-    this.amplitudeDial = 0;
+    this.gainDial = 127;
+    this.amplitudeDial = 127;
     this.patternSelectionDial = 64;
     this.padEffectLevels = new int[50];
     Arrays.fill(padEffectLevels, 0);
@@ -67,12 +69,21 @@ public class MidiStatus implements SimpleMidiListener {
     Arrays.fill(dialSettings, 64);
     
     MidiBus.list(); // List all available Midi devices on STDOUT. This will show each device's index and name.
-    this.myBus = new MidiBus(this, "Wireless [hw:1,0,0]", "Wireless [hw:1,0,0]", "wireless"); // Create a new MidiBus object
+    String[] devices = MidiBus.availableInputs();
+    //if(java.util.Arrays.asList(devices).indexOf("LPD8")>-1) {
+    //  this.myBus = new MidiBus(this, "Akai LPD8 Wireless", "Akai LPD8 Wireless", "wireless"); // Create a new MidiBus object
+    //  this.proxyBus = new MidiBus(midiProxy, "LPD8", "LPD8", "LPD8"); 
+
+    //} else {
+      this.myBus = new MidiBus(this, "Wireless [hw:3,0,0]", "Wireless [hw:3,0,0]", "wireless"); // Create a new MidiBus object
+      this.proxyBus = new MidiBus(midiProxy, "LPD8 [hw:2,0,0]", "LPD8 [hw:2,0,0]", "LPD8"); 
+    //}
     midiProxy = new MidiProxy("localhost", 3333);
     midiEcho = new MidiEcho(midiProxy);
-    this.proxyBus = new MidiBus(midiProxy, "LPD8 [hw:2,0,0]", "LPD8 [hw:2,0,0]", "LPD8"); 
+    midiDials = new MidiDials(this);
     //this.myBus.addInput("Akai LPD8 Wireless");
     this.proxyBus.addMidiListener(midiProxy);
+    this.proxyBus.addMidiListener(midiDials);
     this.myBus.addMidiListener(midiEcho);
   }
   
@@ -108,10 +119,10 @@ public class MidiStatus implements SimpleMidiListener {
     //if (e.getKey() != KeyEvent.PRESS) { return; }
     //println("i see key", e.getKeyCode());
     if (e.getKeyCode() == UP) {
-      dialSettings[Y_LOCATION_DIAL] += 2; 
+      this.golangApertureDial += 2; 
     }      
-    if (e.getKeyCode() == DOWN) {
-      dialSettings[Y_LOCATION_DIAL] -= 2; 
+    if (e.getKeyCode() == 40) {
+      this.golangApertureDial += 2; 
     }
     if (e.getKeyCode() == 65) {
       dialSettings[PATTERN_SELECTOR_DIAL] += 5; 

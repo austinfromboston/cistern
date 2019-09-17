@@ -37,7 +37,7 @@ public class Drawable {
   }
   
   public float alphaAdj(float maxAlpha) {
-    return map(midi.amplitudeDial, 0, 127, maxAlpha, 0);
+    return map(midi.amplitudeDial, 0, 127, 0, maxAlpha);
   }
   
   

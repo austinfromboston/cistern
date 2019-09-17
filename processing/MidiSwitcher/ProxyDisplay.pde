@@ -30,7 +30,7 @@ public class ProxyDisplay {
     //tint(255, 255);
     noStroke();
     //background(0);
-    float proxyAlpha = map(this.midi.gainDial, 0, 127, 255, 0);
+    float proxyAlpha = map(this.midi.gainDial, 0, 127, 0, 255);
     if(this.midi.padEffectActive) {
       proxyAlpha = map(this.midi.padEffectLevel, 0, 127, 150, 255);
     }

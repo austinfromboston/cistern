@@ -2,7 +2,7 @@ public class WarpDrive extends Drawable {
 
 
 
-int n = 500; //number of warp stars
+int n = 5000; //number of warp stars
 
 float[] angle;
 float[] dist;
@@ -93,12 +93,13 @@ void restartStar(int i) {
 //Makes stars blue when faster
 color starcolor(float bright) {
   colorMode(HSB);
-  float sat = map(warp(),1,10,0,100);
+  float sat = map(warp(),1,100,0,100);
   return color(150,sat,bright);
 }
 
 float warp() { //returns a number from 0 to 10, increasing and decreasing over time
-  return map(cos(PI + frameCount / 60.0 / 5),-1,1,0,10);
+  return map(this.midi.dialSettings[SPEED_DIAL], 0, 127, 1, 50);
+  //return map(cos(PI + frameCount / 60.0 / 5),-1,1,0,10);
 }
 
 }

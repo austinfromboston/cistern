@@ -46,7 +46,6 @@ public class CircularOscilloscope extends Drawable {
   void draw() {
     if(drawing) {
       beat.detect(audioIn.mix);
-      this.secondsPerRadiusRefresh = int(map(midi.dialSettings[SPEED_DIAL], 0, 127, 45, 5));
 
 
       fft.forward(audioIn.mix);
@@ -91,7 +90,9 @@ public class CircularOscilloscope extends Drawable {
 
       int bufferSize = audioIn.bufferSize() -1 ;
       for(int i = 0; i < bufferSize; i++){
-        dialOrigins();
+        float originX = width / 2;
+        float originY = 3 * height / 4;
+
         //int radiusMin = evenOffset;
         //int radiusMax = evenOffset + ledStripCount * ledPixelSpacing
         float growth = radiusGrowth();
