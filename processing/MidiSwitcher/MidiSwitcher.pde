@@ -2,6 +2,7 @@ import themidibus.*;
 
 
 OPC opc;
+ArtnetPixels artnetPix;
 CircularOscilloscope circleScope;
 BackgroundScroll backgroundScroll;
 StarField starField;
@@ -17,6 +18,7 @@ MidiStatus midiStatus;
 PImage splash;
 Minim minim;
 AudioInput in;
+
 //AudioOutput out;
 //FFT fft;
 //float[] fftFilter;
@@ -85,7 +87,7 @@ void setup()
   soundBlock = new SoundBlock(this, midiStatus);
   soundWave = new SoundWave(this, midiStatus);
   warpDrive = new WarpDrive(this, midiStatus);
-  
+
   selectablePatterns = new Drawable[]{ backgroundScroll, circleScope, starField, colorWander, geoBubbles, soundBlock, soundWave, perlinNoise, warpDrive };
   //selectablePatterns = new Drawable[]{ colorWander };
 
@@ -98,7 +100,8 @@ void setup()
   opcIn = new OPCListener(8890, layout.points.size());
   opcDisplay = new ProxyDisplay(this, opcIn, midiStatus, layout);
   
-  opcLayout(layout, 37, 120, ip);
+  //opcLayout(layout, 37, 120, ip);
+  artnetLayout(layout, 37, 120, ip);
 }
 
 
@@ -112,6 +115,13 @@ void opcLayout(LayoutLoader layout, int ledStripCount, int ledsPerStrip, String 
     }
 }
 
+
+void artnetLayout(LayoutLoader layout, int ledStripCount, int ledsPerStrip, String ip) {
+    int universes = ledStripCount;
+
+    ArtnetPixels artnetPix = new ArtnetPixels(this, ip, false, universes, ledsPerStrip);
+    artnetPix.pixelLayout(layout);
+}
 
   
 void draw()

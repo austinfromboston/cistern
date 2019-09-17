@@ -70,14 +70,14 @@ public class MidiStatus implements SimpleMidiListener {
     
     MidiBus.list(); // List all available Midi devices on STDOUT. This will show each device's index and name.
     String[] devices = MidiBus.availableInputs();
-    //if(java.util.Arrays.asList(devices).indexOf("LPD8")>-1) {
-    //  this.myBus = new MidiBus(this, "Akai LPD8 Wireless", "Akai LPD8 Wireless", "wireless"); // Create a new MidiBus object
-    //  this.proxyBus = new MidiBus(midiProxy, "LPD8", "LPD8", "LPD8"); 
+    if(java.util.Arrays.asList(devices).indexOf("LPD8")>-1) {
+      this.myBus = new MidiBus(this, "Akai LPD8 Wireless", "Akai LPD8 Wireless", "wireless"); // Create a new MidiBus object
+      this.proxyBus = new MidiBus(midiProxy, "LPD8", "LPD8", "LPD8"); 
 
-    //} else {
+    } else {
       this.myBus = new MidiBus(this, "Wireless [hw:1,0,0]", "Wireless [hw:1,0,0]", "wireless"); // Create a new MidiBus object
       this.proxyBus = new MidiBus(midiProxy, "LPD8 [hw:2,0,0]", "LPD8 [hw:2,0,0]", "LPD8"); 
-    //}
+    }
     midiProxy = new MidiProxy("localhost", 3333);
     midiEcho = new MidiEcho(midiProxy);
     midiDials = new MidiDials(this);
@@ -126,6 +126,10 @@ public class MidiStatus implements SimpleMidiListener {
     }
     if (e.getKeyCode() == 65) {
       dialSettings[PATTERN_SELECTOR_DIAL] += 5; 
+
+    }
+        if (e.getKeyCode() == 66) {
+      dialSettings[PATTERN_SELECTOR_DIAL] -= 5; 
 
     }
   }
