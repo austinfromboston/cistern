@@ -2,7 +2,7 @@ import themidibus.*;
 
 
 OPC opc;
-
+ArtnetPixels artnetPix;
 CircularOscilloscope circleScope;
 BackgroundScroll backgroundScroll;
 StarField starField;
@@ -18,7 +18,7 @@ MidiStatus midiStatus;
 PImage splash;
 Minim minim;
 AudioInput in;
-SyphonSender syphonSender;
+
 //AudioOutput out;
 //FFT fft;
 //float[] fftFilter;
@@ -99,8 +99,9 @@ void setup()
   eyelid = new Eyelid(this, midiStatus);
   opcIn = new OPCListener(8890, layout.points.size());
   opcDisplay = new ProxyDisplay(this, opcIn, midiStatus, layout);
-  syphonSender = new SyphonSender(this);  
-  opcLayout(layout, 37, 120, ip);
+  
+  //opcLayout(layout, 37, 120, ip);
+  artnetLayout(layout, 37, 120, ip);
 }
 
 
@@ -115,14 +116,11 @@ void opcLayout(LayoutLoader layout, int ledStripCount, int ledsPerStrip, String 
 }
 
 
-void dmxLayout(LayoutLoader layout, int ledStripCount, int ledsPerStrip, String ip) {
+void artnetLayout(LayoutLoader layout, int ledStripCount, int ledsPerStrip, String ip) {
+    int universes = ledStripCount;
 
-    for(int ray = 0; ray < ledStripCount; ray++){
-      OPC rayOpc = new OPC(this, ip, 7890 + ray, false);
-      
-      rayOpc.ledRayLayout(0, ray, layout,ledsPerStrip);
-      
-    }
+    ArtnetPixels artnetPix = new ArtnetPixels(this, ip, false, universes, ledsPerStrip);
+    artnetPix.pixelLayout(layout);
 }
 
   
