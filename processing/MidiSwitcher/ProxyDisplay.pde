@@ -50,6 +50,6 @@ public class ProxyDisplay {
       //println(String.format("showing x %f z %f", mappedPoint.x, mappedPoint.z));
       ellipse((int) mappedPoint.x, (int) mappedPoint.z, smallPoint, smallPoint);
     }
-    blendMode(EXCLUSION); 
+    
   }
 }

@@ -4,12 +4,12 @@ public class Eyelid extends Drawable {
   }
   
   void draw() {
-    //noStroke();
-    //blendMode(MULTIPLY);
-    //fill(0, 220);
-    //float rectTop = map(this.midi.golangApertureDial, 127, 0, -height, 0);
+    noStroke();
+    blendMode(MULTIPLY);
+    fill(0, 220);
+    float rectTop = map(this.midi.golangApertureDial, 127, 0, -height, 0);
     //println(rectTop);
     //rect(0, rectTop , width, height);
-    //blendMode(BLEND);
+    blendMode(BLEND);
   }
 }
