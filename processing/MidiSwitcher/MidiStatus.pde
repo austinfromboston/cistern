@@ -75,7 +75,7 @@ public class MidiStatus implements SimpleMidiListener {
     //  this.proxyBus = new MidiBus(midiProxy, "LPD8", "LPD8", "LPD8"); 
 
     //} else {
-      this.myBus = new MidiBus(this, "Wireless [hw:3,0,0]", "Wireless [hw:3,0,0]", "wireless"); // Create a new MidiBus object
+      this.myBus = new MidiBus(this, "Wireless [hw:1,0,0]", "Wireless [hw:1,0,0]", "wireless"); // Create a new MidiBus object
       this.proxyBus = new MidiBus(midiProxy, "LPD8 [hw:2,0,0]", "LPD8 [hw:2,0,0]", "LPD8"); 
     //}
     midiProxy = new MidiProxy("localhost", 3333);
