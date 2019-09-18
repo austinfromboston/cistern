@@ -45,7 +45,7 @@ public class ArtnetPixels implements Runnable
     this.universes = universes;
     this.pixelsPerUni = pixelsPerUni;
     this.pixelLocations = new int[universes][pixelsPerUni];
-    this.packetData = new byte[universes][pixelsPerUni * 3];
+    this.packetData = new byte[universes][pixelsPerUni * 3 + 1];
     
     parent.registerMethod("draw", this);
   }
@@ -95,9 +95,10 @@ public class ArtnetPixels implements Runnable
     //int numPixels = pixelLocations.length;
 
     loadPixels();
-    int ledAddress = 0;
-    
+    //println("pixels per Uni ", this.pixelsPerUni);
+
     for (int i = 0; i < this.universes; i++) {
+      int ledAddress = 0;
       for (int j = 0; j < this.pixelsPerUni; j++) {
         int pixelLocation = pixelLocations[i][j];
         int pixel = pixels[pixelLocation];
