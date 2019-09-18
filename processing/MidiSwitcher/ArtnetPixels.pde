@@ -58,8 +58,8 @@ public class ArtnetPixels implements Runnable
   
   
 
-   /**
-   * Angle is in radians, measured clockwise from +X.
+  /**
+   * Loads pixel locations from a LayoutLoader
    **/
   void pixelLayout(LayoutLoader layout)
   {
@@ -144,14 +144,10 @@ public class ArtnetPixels implements Runnable
       for (int i = 0; i < this.universes; i++) {
        
            int universe = i + 1;
-           //println("Universe is packet is " + universe );
            byte[] pixelBytes = packetData[i];
-           //println("Length of the pixelBytes packet is " + pixelBytes.length );
            int padLen = 512 - (3 * this.pixelsPerUni);
            byte[] pad = new byte[padLen];
-           
            byte[] dmxData = concat(pixelBytes, pad);
-           //println("Length of the dmxData packet is " + dmxData.length );
            
            artnet.unicastDmx(this.host, 0, universe, dmxData);
       
