@@ -45,7 +45,7 @@ public class ArtnetPixels implements Runnable
     this.universes = universes;
     this.pixelsPerUni = pixelsPerUni;
     this.pixelLocations = new int[universes][pixelsPerUni];
-    this.packetData = new byte[universes][pixelsPerUni * 3 + 1];
+    this.packetData = new byte[universes][pixelsPerUni * 3];
     
     parent.registerMethod("draw", this);
   }
@@ -66,7 +66,7 @@ public class ArtnetPixels implements Runnable
     for (int i = 0; i < this.universes; i++) {
       for (int j = 0; j < this.pixelsPerUni; j++) {
         
-        int targetPixel = (i* this.pixelsPerUni) + j;
+        int targetPixel = (i * this.pixelsPerUni) + j;
         Coordinate targetCoord = layout.points.get(targetPixel);
         
         addPixel(i,j,(int) targetCoord.x,(int) targetCoord.z);
@@ -142,14 +142,19 @@ public class ArtnetPixels implements Runnable
     try {
 
       for (int i = 0; i < this.universes; i++) {
-        for (int j = 0; j < this.pixelsPerUni; j++) {
+       
            int universe = i + 1;
+           println("Universe is packet is " + universe );
            byte[] pixelBytes = packetData[i];
-           byte[] pad = new byte[512 - (3 * this.pixelsPerUni)];
+           println("Length of the pixelBytes packet is " + pixelBytes.length );
+           int padLen = 512 - (3 * this.pixelsPerUni);
+           byte[] pad = new byte[padLen];
+           
            byte[] dmxData = concat(pixelBytes, pad);
+           println("Length of the dmxData packet is " + dmxData.length );
            
            artnet.unicastDmx(this.host, 0, universe, dmxData);
-        }
+      
       }
     
     } catch (Exception e) {
@@ -177,18 +182,11 @@ public class ArtnetPixels implements Runnable
 
       if(artnet == null) { // No OPC connection?
         try {              // Make one!
-          //socket = new Socket(host, port);
-          //socket.setTcpNoDelay(true);
-          //pending = socket.getOutputStream(); // Avoid race condition...
+ 
           artnet = new ArtNetClient();
           artnet.start();
           println("Connected to ArtNet client");
-          //sendColorCorrectionPacket();        // These write to 'pending'
-          //sendFirmwareConfigPacket();         // rather than 'output' before
-          //output = pending;                   // rest of code given access.
-          // pending not set null, more config packets are OK!
-        //} catch (ConnectException e) {
-        //  dispose();
+
         } catch (Exception e) {
           dispose();
         }
