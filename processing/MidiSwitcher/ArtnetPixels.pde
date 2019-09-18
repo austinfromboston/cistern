@@ -58,8 +58,8 @@ public class ArtnetPixels implements Runnable
   
   
 
-   /**
-   * Angle is in radians, measured clockwise from +X.
+  /**
+   * Loads pixel locations from a LayoutLoader
    **/
   void pixelLayout(LayoutLoader layout)
   {
