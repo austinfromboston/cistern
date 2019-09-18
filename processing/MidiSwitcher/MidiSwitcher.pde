@@ -62,8 +62,8 @@ void setup()
 {
   size(1000, 700, P3D);
 
-  String ip = "localhost";
-  
+  //String ip = "localhost";
+  String ip = "192.168.10.3";  
   minim = new Minim(this);
   in = minim.getLineIn();
 
