@@ -60,7 +60,7 @@ Drawable[] selectablePatterns;
 
 void setup()
 {
-  size(1000, 700, P3D);
+  size(1100, 800, P3D);
 
   String ip = "localhost";
   
@@ -72,7 +72,7 @@ void setup()
 
   midiStatus = new MidiStatus(this);
   layout = new LayoutLoader();
-  layout.loadList("data/space_potty_fan.json");
+  layout.loadList("data/awesome_fan_2019.json");
 
   beat = new BeatDetect();
   beat.detectMode(BeatDetect.FREQ_ENERGY);
@@ -101,7 +101,7 @@ void setup()
   opcDisplay = new ProxyDisplay(this, opcIn, midiStatus, layout);
   
   //opcLayout(layout, 37, 120, ip);
-  artnetLayout(layout, 37, 120, ip);
+  artnetLayout(layout, 38, 120, ip);
 }
 
 

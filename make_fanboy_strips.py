@@ -75,7 +75,10 @@ class LedStrip(object):
 
 
 strips = [(LedStrip((0.01 if i % 2 else 0.02), math.pi - i*(math.pi/20.0) - (math.pi/20))) for i in range(19)]
-strips = strips + [(LedStrip((1.8 if i % 9 % 2 else 2.00), math.pi - i*(math.pi/20.0) - (3 * math.pi/40), -4 )) for i in range(18)]
+# old arch
+# strips = strips + [(LedStrip((1.8 if i % 9 % 2 else 2.00), math.pi - i*(math.pi/20.0) - (3 * math.pi/40), -4 )) for i in range(18)]
+# new arch
+strips = strips + [(LedStrip((2.85 if i % 2 else 2.5), math.pi - i*(math.pi/20.0) - (math.pi/20))) for i in range(19)]
 
 points = []
 
