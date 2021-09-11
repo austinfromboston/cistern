@@ -19,14 +19,14 @@ public class ProxyDisplay {
     this.midi = midi;
     this.opcIn = opcIn;
     this.layout = layout;
-    this.smallPoint = 2;
+    this.smallPoint = 4;
   }
   
   void draw() {
     if(!allowProxy) {
       return;
     }
-    blendMode(ADD);
+    blendMode(LIGHTEST);
     //tint(255, 255);
     noStroke();
     //background(0);

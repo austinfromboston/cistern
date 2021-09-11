@@ -81,11 +81,15 @@ public class MidiStatus implements SimpleMidiListener {
     }
     midiProxy = new MidiProxy("localhost", 3333);
     midiEcho = new MidiEcho(midiProxy);
-    midiDials = new MidiDials(this);
+    //midiDials = new MidiDials(this);
+    if (this.proxyBus != null) {
+      this.proxyBus.addMidiListener(midiProxy);
+      //this.proxyBus.addMidiListener(midiDials);
+    }
+    if (this.proxyBus != null) {
+      this.myBus.addMidiListener(midiEcho);
+    }
     //this.myBus.addInput("Akai LPD8 Wireless");
-    this.proxyBus.addMidiListener(midiProxy);
-    this.proxyBus.addMidiListener(midiDials);
-    this.myBus.addMidiListener(midiEcho);
   }
   
   
