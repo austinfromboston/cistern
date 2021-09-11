@@ -52,12 +52,12 @@ RIB_LENGTH = 2 # welcome to meters, frenz
 LEDS_PER_UPRIGHT = int(math.floor(RIB_LENGTH / LEDS_PER_METER))
 
 class LedStrip(object):
-    def __init__(self, inner_radius, angle, y_loc=0, outbound=True, length=120):
-        self.start_location =  (0,0,0)
+    def __init__(self, inner_radius, x_offset, y_loc=0, outbound=True, length=120):
+        self.start_location =  (x_offset,0,0)
         self.inner_radius = inner_radius
         #self.input_strip = input_strip
         self.length = length
-        self.angle = angle
+        self.angle = 0 - (math.pi / 2)
         self.outbound = outbound
         self.y_loc = y_loc
 
@@ -71,11 +71,11 @@ class LedStrip(object):
             led_range = range(self.length)
         else:
             led_range = reversed(range(self.length))
-        return [(x_radius + (i*x_increment), self.y_loc, z_radius + (i*z_increment)) for i in led_range]
+        return [(self.start_location[0], self.y_loc, z_radius + (i*z_increment)) for i in led_range]
 
 
-strips = [(LedStrip((0.01 if i % 2 else 0.02), math.pi - i*(math.pi/20.0) - 3*(math.pi/20))) for i in range(15)]
-strips = strips + [(LedStrip((2.85 if i % 9 % 2 else 2.5), math.pi - i*(math.pi/20.0), -4 )) for i in range(19)]
+strips = [LedStrip(0.01, i * 0.1) for i in range(40)]
+
 points = []
 
 for strip in strips:

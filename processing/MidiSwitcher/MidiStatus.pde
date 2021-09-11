@@ -80,6 +80,9 @@ public class MidiStatus implements SimpleMidiListener {
       }
     }
     midiProxy = new MidiProxy("localhost", 3333);
+    if (this.proxyBus != null) {
+      this.proxyBus.addMidiListener(midiProxy);
+    }
     midiEcho = new MidiEcho(midiProxy);
     //midiDials = new MidiDials(this);
     if (this.proxyBus != null) {
