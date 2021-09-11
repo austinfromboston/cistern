@@ -144,7 +144,6 @@ public class ArtnetPixels implements Runnable
       for (int i = 0; i < this.universes; i++) {
        
            int universe = i + 1;
-           
            byte[] pixelBytes = packetData[i];
            int padLen = 512 - (3 * this.pixelsPerUni);
            byte[] pad = new byte[padLen];

@@ -60,10 +60,10 @@ HashMap<String, Drawable> allowedEffects;
 
 void setup()
 {
-  size(1100, 800, P3D);
+  size(1100, 900, P3D);
 
-  String ip = "localhost";
-  
+  //String ip = "localhost";
+  String ip = "192.168.10.20";  
   minim = new Minim(this);
   in = minim.getLineIn();
 
@@ -72,7 +72,7 @@ void setup()
 
   midiStatus = new MidiStatus(this);
   layout = new LayoutLoader();
-  layout.loadList("data/awesome_fan_2019.json");
+  layout.loadList("data/awesome_fan_2019_onsite.json");
 
   beat = new BeatDetect();
   beat.detectMode(BeatDetect.FREQ_ENERGY);
@@ -102,7 +102,7 @@ void setup()
 
   float proxyOriginX = width /2;
   float proxyOriginY = 3 * height / 4;
-  //layout = layout.flip(0,0,0).multiplied(115).offset(proxyOriginX, 0, proxyOriginY);
+  //layout = layout.flip(0,0,0).multiplied(115).o  ffset(proxyOriginX, 0, proxyOriginY);
   layout = layout.flip(0,0,0).flipX(0).multiplied(115).offset(proxyOriginX, 0, proxyOriginY);
 
   //eyelid = new Eyelid(this, midiStatus);
@@ -111,6 +111,7 @@ void setup()
   
   //opcLayout(layout, 37, 120, ip);
   artnetLayout(layout, 38, 120, ip);
+  artnetLayout(layout, 38, 120, "192.168.10.3");
 }
 
 

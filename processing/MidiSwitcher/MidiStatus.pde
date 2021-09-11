@@ -96,9 +96,15 @@ public class MidiStatus implements SimpleMidiListener {
       this.proxyBus.addMidiListener(midiProxy);
     }
     midiEcho = new MidiEcho(midiProxy);
-    if (this.myBus != null) {
+    //midiDials = new MidiDials(this);
+    if (this.proxyBus != null) {
+      this.proxyBus.addMidiListener(midiProxy);
+      //this.proxyBus.addMidiListener(midiDials);
+    }
+    if (this.proxyBus != null) {
       this.myBus.addMidiListener(midiEcho);
     }
+    //this.myBus.addInput("Akai LPD8 Wireless");
   }
   
   public void checkGamepad() {

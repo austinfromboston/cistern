@@ -74,7 +74,8 @@ void draw() {
       //println("wave seeing ", micLevel);
       strokeWeight((100*micLevel+5) * strokeAdj);
       h = ((rand4*micLevel)+50)*sin(w/(rand)) * pow(abs(sin(w * randW + frameCount * randS)), 5) + originY;
-      curveVertex(w,h);
+      //curveVertex(w,h);
+      curveVertex(h,w);
     }
   endShape();
 //----blue line---------
@@ -84,7 +85,7 @@ void draw() {
       micLevel = amp.analyze();
       strokeWeight((100*micLevel+5)* strokeAdj);
       h = (rand5*micLevel+50)*sin(w/(rand2)) * pow(abs(sin(w * randW + frameCount * randS)), 5) + originY;
-      curveVertex(w,h);
+      curveVertex(h,w);
     }
   endShape();
 //-----green line-------
@@ -95,7 +96,7 @@ void draw() {
       //println(micLevel);
       strokeWeight((100*micLevel+5)* strokeAdj);
       h = (rand6*micLevel+50)*sin(w/(rand3)) * pow(abs(sin(w * randW + frameCount * randS)), 5) + originY;
-      curveVertex(w,h);
+      curveVertex(h,w);
     }
   endShape();
   pop();
