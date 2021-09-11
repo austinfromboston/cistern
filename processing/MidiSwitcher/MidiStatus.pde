@@ -26,6 +26,10 @@ int AMPLITUDE_DIAL = 8;
 int X_LOCATION_DIAL = 7;
 int Y_LOCATION_DIAL = 6;
 
+int RIGHT_STICK_Y = APERTURE_DIAL;
+int RIGHT_STICK_X = DIRECTION_DIAL;
+int LEFT_STICK_Y = Y_LOCATION_DIAL;
+int LEFT_STICK_X = X_LOCATION_DIAL;
 
 public class MidiStatus implements SimpleMidiListener {
   PApplet parent;
@@ -35,6 +39,7 @@ public class MidiStatus implements SimpleMidiListener {
   public int gainDial;
   public int patternSelectionDial;
   public int amplitudeDial;
+  public float starSpeed;
   public boolean sparklePadActive;
   public int sparklePadLevel;
   public static final int DIAL_MIN = 0;
@@ -44,12 +49,16 @@ public class MidiStatus implements SimpleMidiListener {
   public MidiEcho midiEcho; // echos allowed commands from the java board to Go
   public MidiProxy midiProxy;  
   public MidiDials midiDials;
+  public GamepadStatus gamepadStatus;
   private boolean[] padEffectsActive;
   private int[] padEffectLevels;
   public boolean padEffectActive;
   public int padEffectLevel;
   public int[] dialSettings;
+  public HashMap<String, Integer> lastUpdates;
   public int golangApertureDial = 127;
+  public ArrayList<String> activeEffects;
+  //public boolean scopeActive = false;
   
   public MidiStatus(PApplet parent) {
     this.parent = parent;
@@ -60,14 +69,17 @@ public class MidiStatus implements SimpleMidiListener {
     this.sparklePadActive = false;
     this.gainDial = 127;
     this.amplitudeDial = 127;
-    this.patternSelectionDial = 64;
+    this.patternSelectionDial = 0;
     this.padEffectLevels = new int[50];
+    this.starSpeed = 1;
+    this.lastUpdates = new HashMap<String, Integer>();
     Arrays.fill(padEffectLevels, 0);
     this.padEffectsActive = new boolean[50];
     Arrays.fill(padEffectsActive, false);
     this.dialSettings = new int[20];
     Arrays.fill(dialSettings, 64);
-    
+    this.gamepadStatus = new GamepadStatus(parent);
+    this.activeEffects = new ArrayList<String>();
     MidiBus.list(); // List all available Midi devices on STDOUT. This will show each device's index and name.
     String[] devices = MidiBus.availableInputs();
     for(String deviceDescription: devices) {
@@ -89,6 +101,98 @@ public class MidiStatus implements SimpleMidiListener {
     }
   }
   
+  public void checkGamepad() {
+    ControllerState status = this.gamepadStatus.update();
+    if (!status.isConnected) {
+      return;
+    }
+    if (status.leftStickY != 0) {
+      this.adjustDialWrapped(Y_LOCATION_DIAL, 0- status.leftStickY);
+    }
+    if (status.leftStickX != 0) {
+      this.adjustDialPatternWrapped(X_LOCATION_DIAL, status.leftStickX);
+    }
+    if (status.dpadLeft) {
+      this.patternSelectionDial = this.adjustDialWrapped(PATTERN_SELECTOR_DIAL, 2.5);
+    }
+    if (status.dpadRight) {
+      this.patternSelectionDial = this.adjustDialWrapped(PATTERN_SELECTOR_DIAL, -2.5);
+    }
+    if (status.dpadUp) {
+      this.speedDial = this.adjustDial(SPEED_DIAL, 1);
+    }
+    if (status.dpadDown) {
+      this.speedDial = this.adjustDial(SPEED_DIAL, -1);
+    }
+    if (status.rightStickX != 0) {
+      this.adjustDialWrapped(APERTURE_DIAL, status.rightStickX);
+    }
+    if (status.rightStickY != 0) {
+      this.adjustDialWrapped(DIRECTION_DIAL, status.rightStickY);
+    }
+    if (status.xJustPressed) {
+      this.toggleEffect("scope");
+    }
+    if (status.yJustPressed) {
+      this.toggleEffect("scroll");
+    }    
+    if (status.aJustPressed) {
+      this.toggleEffect("wave");
+    }
+    
+    if (status.b && status.rightTrigger > 0) {
+      float vector = - 0.5 + status.rightTrigger;
+      this.toggleEffectOn("stars");
+      this.starSpeed = Math.max(Math.min(this.starSpeed + (vector * 2), DIAL_MAX), DIAL_MIN);
+    } else if (status.bJustPressed) {
+      this.toggleEffect("stars");
+    }
+    if (status.leftTrigger > 0 && status.leftStickClick) {
+      float vector = - 0.5 + status.leftTrigger;
+      this.amplitudeDial = int(Math.max(Math.min(this.amplitudeDial + (vector * 2), DIAL_MAX), DIAL_MIN));
+    } 
+  }
+  
+  public void toggleEffect(String effectName) {
+    if (this.activeEffects.contains(effectName)) {
+      this.activeEffects.remove(effectName);
+    } else {
+      this.activeEffects.add(effectName);
+    }
+  }
+
+  public void toggleEffectOn(String effectName) {
+    if (this.activeEffects.contains(effectName)) {
+      // do nothing
+    } else {
+      this.activeEffects.add(effectName);
+    }
+  }
+  public int adjustDial(int dialName, float vector) {
+    int newSetting = Math.max(Math.min(this.dialSettings[dialName] + int(vector * 2), DIAL_MAX), DIAL_MIN);
+    this.dialSettings[dialName] = newSetting;
+    return newSetting;
+  }
+
+  public int adjustDialWrapped(int dialName, float vector) {
+    int oldSetting = this.dialSettings[dialName];
+    if (oldSetting == DIAL_MAX && vector > 0) {
+      this.dialSettings[dialName] = DIAL_MIN;
+    } else if (oldSetting == DIAL_MIN && vector < 0) {
+      this.dialSettings[dialName] = DIAL_MAX;
+    }
+    return adjustDial(dialName, vector);
+  }
+  
+  public int adjustDialPatternWrapped(int dialName, float vector) {
+    int oldSetting = this.dialSettings[dialName];
+    if (oldSetting == DIAL_MAX && vector > 0) {
+      this.adjustDialWrapped(PATTERN_SELECTOR_DIAL, 2.5);
+    } else if (oldSetting == DIAL_MIN && vector < 0) {
+      this.adjustDialWrapped(PATTERN_SELECTOR_DIAL, -2.5);
+    }
+    return this.adjustDialWrapped(dialName, vector);
+  }
   
   public void controllerChange(int channel, int number, int value) {
     String dialName = "";

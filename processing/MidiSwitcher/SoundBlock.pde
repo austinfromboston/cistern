@@ -19,13 +19,14 @@ public class SoundBlock extends Drawable {
   }
 
   void setup() {
-    noStroke();
+    //noStroke();
     //frameRate(30);
     this.mic = new processing.sound.AudioIn(parent, 0);
     mic.start();
     this.amp = new Amplitude(parent);
     amp.input(mic);
-      
+        println("Soundblock is active");
+  
     this.fft = new processing.sound.FFT(parent, 64);
     //this.amp = new Amplitude(parent);
     //fft.linAverages( 30 );
@@ -44,11 +45,14 @@ public class SoundBlock extends Drawable {
    
   void draw() {
     if (!this.drawing) { return; }
+    push();
+    noStroke();
     a -= 0.1;
     dialOrigins(1);
     //fft.forward(audioIn);
     //float[] spectrum = fft.analyze();
-    pushMatrix();
+    //pushMatrix();
+    strokeWeight(0);
     if (alphaAdj() > 120) {
       blendMode(REPLACE);
     }
@@ -87,7 +91,7 @@ public class SoundBlock extends Drawable {
     }
     //canvas.endDraw();
     //image(canvas, 0, 0);
-    popMatrix();
+    pop();
   }
 
   

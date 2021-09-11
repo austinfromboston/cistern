@@ -37,6 +37,7 @@ int randSeed = 0;
 
 void draw() {
   if (!this.drawing) { return; }
+  push();
   randSeed += frameCount;
   randomSeed(randSeed % 120); //Make a predictable pattern (useful for making the effect consistent)
   dialOrigins();
@@ -79,6 +80,7 @@ void draw() {
   textSize(30);
   textAlign(LEFT,TOP);
   text("WARP "+round(warp()*10)/10.0,40,40);
+  pop();
 }
 
 void restartStar(int i) {
@@ -98,7 +100,7 @@ color starcolor(float bright) {
 }
 
 float warp() { //returns a number from 0 to 10, increasing and decreasing over time
-  return map(this.midi.dialSettings[SPEED_DIAL], 0, 127, 1, 50);
+  return map(this.midi.starSpeed, 0, 127, 0, 40);
   //return map(cos(PI + frameCount / 60.0 / 5),-1,1,0,10);
 }
 

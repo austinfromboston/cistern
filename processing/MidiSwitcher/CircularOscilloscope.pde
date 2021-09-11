@@ -36,7 +36,6 @@ public class CircularOscilloscope extends Drawable {
     this.fft = new ddf.minim.analysis.FFT(audioIn.bufferSize(), audioIn.sampleRate());
     this.fft.logAverages(22, 1);
     this.fftFilter = new float[audioIn.bufferSize()];
-
   }
 
   private float radiusGrowth() {
@@ -44,7 +43,8 @@ public class CircularOscilloscope extends Drawable {
   }
 
   void draw() {
-    if(drawing) {
+    if(!drawing) return;
+    push();
       beat.detect(audioIn.mix);
 
 
@@ -65,7 +65,6 @@ public class CircularOscilloscope extends Drawable {
 
 
       //int oscillAlpha = 70; // (int) map(midi.opcDial, 65, 128, 40 , 70);
-
       blendMode(ADD);
       strokeWeight(6);
       strokeJoin(ROUND);
@@ -180,10 +179,13 @@ public class CircularOscilloscope extends Drawable {
         originX - cos(anglePrime) * samplePrime,
         originY - sin(angle) * samplePrime
        );
+  
+
+
+
+
     }
-
-
-
-    }
+    pop();
   }
+  
 }

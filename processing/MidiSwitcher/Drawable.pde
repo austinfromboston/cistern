@@ -13,6 +13,8 @@ public class Drawable {
   public void setup() {
     colorMode(RGB, 255);
     dialOrigins();
+    String className = this.getClass().getSimpleName();
+    println(className + " is active");
   }
   
   public void dialOrigins() {

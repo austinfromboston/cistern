@@ -1,6 +1,4 @@
 
-
-
 public class GeoBubbles extends Drawable {
   float t;
   float theta;

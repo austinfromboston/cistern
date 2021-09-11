@@ -5,14 +5,13 @@ OPC opc;
 ArtnetPixels artnetPix;
 CircularOscilloscope circleScope;
 BackgroundScroll backgroundScroll;
-StarField starField;
-PerlinNoise perlinNoise;
+//StarField starField;
 GeoBubbles geoBubbles;
 WarpDrive warpDrive; 
-Colorwander colorWander;
 SoundBlock soundBlock;
 SoundWave soundWave;
-Eyelid eyelid;
+//Eyelid eyelid;
+CircleWaltz circleWaltz;
 
 MidiStatus midiStatus;
 PImage splash;
@@ -57,6 +56,7 @@ float size = 100;
   boolean allowProxy;
   
 Drawable[] selectablePatterns;
+HashMap<String, Drawable> allowedEffects;
 
 void setup()
 {
@@ -77,19 +77,28 @@ void setup()
   beat = new BeatDetect();
   beat.detectMode(BeatDetect.FREQ_ENERGY);
 
+  // effects
   backgroundScroll = new BackgroundScroll(this, in, beat, midiStatus);
   circleScope = new CircularOscilloscope(this, beat, in, midiStatus, evenOffset, int(evenOffset + ledPixelSpacing * ledStripCount * 1.8));
-  starField = new StarField(this, midiStatus);
-  perlinNoise = new PerlinNoise(this, midiStatus);
-  colorWander = new Colorwander(this, midiStatus);
-  //colorWander.setup();
-  geoBubbles = new GeoBubbles(this, midiStatus);
-  soundBlock = new SoundBlock(this, midiStatus);
+  //starField = new StarField(this, midiStatus);
   soundWave = new SoundWave(this, midiStatus);
+  soundWave.setup();
   warpDrive = new WarpDrive(this, midiStatus);
 
-  selectablePatterns = new Drawable[]{ backgroundScroll, circleScope, starField, colorWander, geoBubbles, soundBlock, soundWave, perlinNoise, warpDrive };
-  //selectablePatterns = new Drawable[]{ colorWander };
+
+  // patterns
+  geoBubbles = new GeoBubbles(this, midiStatus);
+  soundBlock = new SoundBlock(this, midiStatus);
+  circleWaltz = new CircleWaltz(this, midiStatus);
+
+  allowedEffects = new HashMap<String, Drawable>();
+  allowedEffects.put("scope", circleScope);
+  allowedEffects.put("scroll", backgroundScroll);
+  allowedEffects.put("wave", soundWave);
+  allowedEffects.put("stars", warpDrive);
+  
+  selectablePatterns = new Drawable[]{ geoBubbles, circleWaltz, soundBlock };
+
 
   float proxyOriginX = width /2;
   float proxyOriginY = 3 * height / 4;
@@ -126,10 +135,16 @@ void artnetLayout(LayoutLoader layout, int ledStripCount, int ledsPerStrip, Stri
   
 void draw()
 {
+  midiStatus.checkGamepad();
   int selectedPattern = round(map(midiStatus.dialSettings[PATTERN_SELECTOR_DIAL], 0, 127, 0, selectablePatterns.length-1));
   for(int i = 0; i< selectablePatterns.length; i++) {
     selectablePatterns[i].setDrawing(i == selectedPattern);
   }
+  // display active effects
+  for(String key : allowedEffects.keySet()){
+    allowedEffects.get(key).setDrawing(midiStatus.activeEffects.contains(key));
+  }
+
   this.allowProxy = selectablePatterns[selectedPattern].allowProxy();
   if(lastPattern != selectedPattern) {
     selectablePatterns[selectedPattern].setup();

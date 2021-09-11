@@ -26,6 +26,8 @@ void setup() {
   mic.start();
   this.amp = new Amplitude(parent);
   amp.input(mic);
+      println("soundwave is active");
+
 }
 
 void mousePressed() {
@@ -58,7 +60,7 @@ void draw() {
   else{
     cont++;
   }
-  pushMatrix();
+  push();
     //blendMode(BLEND);
     //background(0);
     blendMode(SCREEN);
@@ -96,7 +98,7 @@ void draw() {
       curveVertex(w,h);
     }
   endShape();
-  popMatrix();
+  pop();
 
 }
 }
