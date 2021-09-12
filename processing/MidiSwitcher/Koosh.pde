@@ -34,18 +34,19 @@ public class Koosh extends Drawable {
       boxArray.get(x).move();
       boxArray.get(x).checkEdge();
     } //for
-    float offsetAdj = map(this.midi.dialSettings[APERTURE_DIAL], 0, 127, 0, 400);
+    float offsetAdj = map(this.midi.dialSettings[APERTURE_DIAL], 0, 127, 0, 150);
 
     //float volume = amp.analyze();
     //float W = map(volume, 0, 1, 2, 40);
     blendMode(BLEND);
     //noStroke();
     colorMode(RGB);
-    stroke(0, 0, 0, 5);
-    for(int i = 0; i < offsetAdj; i++) {
-      strokeWeight(i+1);
+    stroke(0, 0, 0, 25);
+    for(int i = 0; i < offsetAdj; i+=5) {
+      stroke(0, 0, 0, Math.max(offsetAdj - i, 10));
+      strokeWeight(i+5);
       //fill(0, 0, 0, 255);
-      ellipse(originX, originY, i, i);
+      ellipse(originX, originY, i*5, i*5);
 
     }
 
