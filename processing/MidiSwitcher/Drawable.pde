@@ -13,8 +13,6 @@ public class Drawable {
   public void setup() {
     colorMode(RGB, 255);
     dialOrigins();
-    String className = this.getClass().getSimpleName();
-    println(className + " is active");
   }
   
   public void dialOrigins() {
@@ -40,6 +38,10 @@ public class Drawable {
   
   public float alphaAdj(float maxAlpha) {
     return map(midi.amplitudeDial, 0, 127, 0, maxAlpha);
+  }
+  
+  public float hueAdj() {
+    return map(this.midi.dialSettings[COLOR_DIAL], MidiStatus.DIAL_MIN, MidiStatus.DIAL_MAX, -127, 127);
   }
   
   

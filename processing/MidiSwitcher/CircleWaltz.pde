@@ -1,15 +1,13 @@
 public class CircleWaltz extends Drawable {
 
   final int MAX_CIRCLE_CNT = 1000, MIN_CIRCLE_CNT = 100, 
-    MAX_VERTEX_CNT = 30, MIN_VERTEX_CNT = 3;
+    MAX_VERTEX_CNT = 20, MIN_VERTEX_CNT = 3;
 
   int circleCnt, vertexCnt;
     
   
   public CircleWaltz(PApplet parent, MidiStatus midi) {
     super(parent, midi);
-    //colors = new color[]{#FF5A5F, #F0F757, #F92A82, #86bbd8, #f6ae2d, #f26419, #ebe9e9, #f3f8f2, #3581b8, #fcb07e, #dee2d6};
-
   }
 
 
@@ -33,7 +31,7 @@ public class CircleWaltz extends Drawable {
       // 获得每一个圆的圆心、半径、颜色
       PVector circleCenter = getCenterByTheta(thetaC, time, scale);
       float circleSize = getSizeByTheta(thetaC, time, scale);
-      color c = getColorByTheta(thetaC, time);
+      color c = adjustColor(getColorByTheta(thetaC, time));
   
       // 绘制每一圆的所有顶点
       stroke(c);
@@ -53,7 +51,7 @@ public class CircleWaltz extends Drawable {
   void updateCntByControls() {
     //float xoffset = abs(mouseX - width / 2), yoffset = abs(mouseY - height / 2);
     circleCnt = int(map(midi.dialSettings[RIGHT_STICK_Y], MidiStatus.DIAL_MIN, MidiStatus.DIAL_MAX, MAX_CIRCLE_CNT, MIN_CIRCLE_CNT));
-    vertexCnt = int(map(midi.dialSettings[RIGHT_STICK_X], MidiStatus.DIAL_MIN, MidiStatus.DIAL_MAX, MAX_VERTEX_CNT, MIN_VERTEX_CNT));
+    vertexCnt = int(map(Math.min(midi.dialSettings[RIGHT_STICK_X], 100), MidiStatus.DIAL_MIN, 100, MAX_VERTEX_CNT, MIN_VERTEX_CNT));
   }
   
   PVector getCenterByTheta(float theta, float time, float scale) {

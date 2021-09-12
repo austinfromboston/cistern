@@ -12,6 +12,10 @@ SoundBlock soundBlock;
 SoundWave soundWave;
 //Eyelid eyelid;
 CircleWaltz circleWaltz;
+DiscoFloor discoFloor;
+Koosh koosh;
+Plaid plaid;
+Nothing nothing;
 
 MidiStatus midiStatus;
 PImage splash;
@@ -77,19 +81,24 @@ void setup()
   beat = new BeatDetect();
   beat.detectMode(BeatDetect.FREQ_ENERGY);
 
-  // effects
-  backgroundScroll = new BackgroundScroll(this, in, beat, midiStatus);
-  circleScope = new CircularOscilloscope(this, beat, in, midiStatus, evenOffset, int(evenOffset + ledPixelSpacing * ledStripCount * 1.8));
-  //starField = new StarField(this, midiStatus);
-  soundWave = new SoundWave(this, midiStatus);
-  soundWave.setup();
-  warpDrive = new WarpDrive(this, midiStatus);
 
 
   // patterns
   geoBubbles = new GeoBubbles(this, midiStatus);
   soundBlock = new SoundBlock(this, midiStatus);
   circleWaltz = new CircleWaltz(this, midiStatus);
+  discoFloor = new DiscoFloor(this, midiStatus);
+  koosh = new Koosh(this, midiStatus);
+  //rainbowEq = new RainbowEQ(this, midiStatus);
+  plaid = new Plaid(this, midiStatus);
+  nothing = new Nothing(this, midiStatus);
+
+  // effects
+  backgroundScroll = new BackgroundScroll(this, in, beat, midiStatus);
+  circleScope = new CircularOscilloscope(this, beat, in, midiStatus, evenOffset, int(evenOffset + ledPixelSpacing * ledStripCount * 1.8));
+  //starField = new StarField(this, midiStatus);
+  soundWave = new SoundWave(this, midiStatus);
+  warpDrive = new WarpDrive(this, midiStatus);
 
   allowedEffects = new HashMap<String, Drawable>();
   allowedEffects.put("scope", circleScope);
@@ -97,7 +106,7 @@ void setup()
   allowedEffects.put("wave", soundWave);
   allowedEffects.put("stars", warpDrive);
   
-  selectablePatterns = new Drawable[]{ geoBubbles, circleWaltz, soundBlock };
+  selectablePatterns = new Drawable[]{ geoBubbles, discoFloor, koosh, plaid, circleWaltz, soundBlock, nothing };
 
 
   float proxyOriginX = width /2;
@@ -133,6 +142,19 @@ void artnetLayout(LayoutLoader layout, int ledStripCount, int ledsPerStrip, Stri
     artnetPix.pixelLayout(layout);
 }
 
+void currentPattern(Drawable pattern, String[] effects) {
+  push();  
+  fill(255);
+    
+  textSize(30);
+  textAlign(LEFT,TOP);
+  text(pattern.getClass().getSimpleName(),800,800);
+  if (effects.length > 0) {
+    text("(" + join(effects, ",")+")",800,850);
+  }
+
+  pop();
+}
   
 void draw()
 {
@@ -153,4 +175,7 @@ void draw()
   }
   //System.gc();
   selectablePatterns[selectedPattern].addBackground();
+  String[] patternNames = new String[]{};
+  patternNames = midiStatus.activeEffects.toArray(patternNames);
+  currentPattern(selectablePatterns[selectedPattern], patternNames);
 }

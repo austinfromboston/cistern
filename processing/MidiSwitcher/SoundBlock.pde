@@ -23,8 +23,8 @@ public class SoundBlock extends Drawable {
     //frameRate(30);
     this.mic = new processing.sound.AudioIn(parent, 0);
     mic.start();
-    this.amp = new Amplitude(parent);
-    amp.input(mic);
+    //this.amp = new Amplitude(parent);
+    //amp.input(mic);
         println("Soundblock is active");
   
     this.fft = new processing.sound.FFT(parent, 64);
@@ -47,7 +47,7 @@ public class SoundBlock extends Drawable {
     if (!this.drawing) { return; }
     push();
     noStroke();
-    a -= 0.1;
+    a -= 0.1 * map(this.midi.dialSettings[SPEED_DIAL], MidiStatus.DIAL_MIN, MidiStatus.DIAL_MAX, 0.1, 3.5);
     dialOrigins(1);
     //fft.forward(audioIn);
     //float[] spectrum = fft.analyze();
@@ -56,6 +56,8 @@ public class SoundBlock extends Drawable {
     if (alphaAdj() > 120) {
       blendMode(REPLACE);
     }
+    float scaleSetting = map(this.midi.dialSettings[APERTURE_DIAL], 0, 127, 0.3, 3);
+    scale(scaleSetting);
     for (int x = -10; x < 10; x++) {
       for (int z = -10; z < 10; z++) {
          
@@ -66,8 +68,8 @@ public class SoundBlock extends Drawable {
         float zm = z*17 -8.5;
         float zt = z*17 +8.5;
         
-        float halfw = originX;
-        float halfh = originY;
+        float halfw = originX / scaleSetting;
+        float halfh = originY / scaleSetting;
             
         int isox1 = int(xm - zm + halfw);
         int isoy1 = int((xm + zm) * 0.5 + halfh);
@@ -78,17 +80,25 @@ public class SoundBlock extends Drawable {
         int isox4 = int(xt - zm + halfw);
         int isoy4 = int((xt + zm) * 0.5 + halfh);
         
-        fill ( random(100, 200), random(200, 220), random(240, 255), alphaAdj());
+        colorMode(RGB);
+        color pColor1 = color(random(100, 200), random(200, 220), random(240, 255), alphaAdj());
+        color pColor2 = color(random(240, 255), random(100, 200), random(200, 220), alphaAdj());
+        colorMode(HSB);
+        pColor1 = color(hue(pColor1) + hueAdj(), saturation(pColor1), brightness(pColor1), this.alphaAdj());
+        pColor2 = color(hue(pColor2) + hueAdj(), saturation(pColor1), brightness(pColor1), this.alphaAdj());
+
+        fill ( pColor1);
         quad(isox2, isoy2-y, isox3, isoy3-y, isox3, isoy3+40, isox2, isoy2+40);
     
-        fill(random(240, 255), random(100, 200), random(200, 220), alphaAdj());
+        fill(pColor2);
         quad(isox3, isoy3-y, isox4, isoy4-y, isox4, isoy4+40, isox3, isoy3+40);
-    
+        colorMode(RGB);
         fill(237, 237, 230, alphaAdj());
         quad(isox1, isoy1-y, isox2, isoy2-y, isox3, isoy3-y, isox4, isoy4-y);
    
       }
     }
+    scale(1);
     //canvas.endDraw();
     //image(canvas, 0, 0);
     pop();

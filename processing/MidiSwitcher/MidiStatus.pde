@@ -25,6 +25,7 @@ int SATURATION_DIAL = 7;
 int AMPLITUDE_DIAL = 8;
 int X_LOCATION_DIAL = 7;
 int Y_LOCATION_DIAL = 6;
+int COLOR_DIAL = 5;
 
 int RIGHT_STICK_Y = APERTURE_DIAL;
 int RIGHT_STICK_X = DIRECTION_DIAL;
@@ -40,6 +41,7 @@ public class MidiStatus implements SimpleMidiListener {
   public int patternSelectionDial;
   public int amplitudeDial;
   public float starSpeed;
+  public float backgroundScrollSpeed;
   public boolean sparklePadActive;
   public int sparklePadLevel;
   public static final int DIAL_MIN = 0;
@@ -56,6 +58,7 @@ public class MidiStatus implements SimpleMidiListener {
   public int padEffectLevel;
   public int[] dialSettings;
   public HashMap<String, Integer> lastUpdates;
+  public HashMap<String, Float> effectSpeed; 
   public int golangApertureDial = 127;
   public ArrayList<String> activeEffects;
   //public boolean scopeActive = false;
@@ -72,6 +75,13 @@ public class MidiStatus implements SimpleMidiListener {
     this.patternSelectionDial = 0;
     this.padEffectLevels = new int[50];
     this.starSpeed = 1;
+    this.backgroundScrollSpeed = 64;
+    this.effectSpeed = new HashMap<String, Float>();
+    this.effectSpeed.put("stars", 1.0);
+    this.effectSpeed.put("scroll", 64.0);
+    this.effectSpeed.put("scope", 64.0);
+    this.effectSpeed.put("wave", 64.0);
+
     this.lastUpdates = new HashMap<String, Integer>();
     Arrays.fill(padEffectLevels, 0);
     this.padEffectsActive = new boolean[50];
@@ -116,13 +126,13 @@ public class MidiStatus implements SimpleMidiListener {
       this.adjustDialWrapped(Y_LOCATION_DIAL, 0- status.leftStickY);
     }
     if (status.leftStickX != 0) {
-      this.adjustDialPatternWrapped(X_LOCATION_DIAL, status.leftStickX);
+      this.adjustDialWrapped(X_LOCATION_DIAL, status.leftStickX);
     }
     if (status.dpadLeft) {
-      this.patternSelectionDial = this.adjustDialWrapped(PATTERN_SELECTOR_DIAL, 2.5);
+      this.patternSelectionDial = this.adjustDialWrapped(PATTERN_SELECTOR_DIAL, 2.2);
     }
     if (status.dpadRight) {
-      this.patternSelectionDial = this.adjustDialWrapped(PATTERN_SELECTOR_DIAL, -2.5);
+      this.patternSelectionDial = this.adjustDialWrapped(PATTERN_SELECTOR_DIAL, -2.2);
     }
     if (status.dpadUp) {
       this.speedDial = this.adjustDial(SPEED_DIAL, 1);
@@ -131,32 +141,42 @@ public class MidiStatus implements SimpleMidiListener {
       this.speedDial = this.adjustDial(SPEED_DIAL, -1);
     }
     if (status.rightStickX != 0) {
-      this.adjustDialWrapped(APERTURE_DIAL, status.rightStickX);
+      this.adjustDialWrapped(COLOR_DIAL, status.rightStickX);
     }
     if (status.rightStickY != 0) {
-      this.adjustDialWrapped(DIRECTION_DIAL, status.rightStickY);
+      this.adjustDialWrapped(APERTURE_DIAL, status.rightStickY);
     }
-    if (status.xJustPressed) {
-      this.toggleEffect("scope");
-    }
-    if (status.yJustPressed) {
-      this.toggleEffect("scroll");
-    }    
-    if (status.aJustPressed) {
-      this.toggleEffect("wave");
-    }
-    
-    if (status.b && status.rightTrigger > 0) {
-      float vector = - 0.5 + status.rightTrigger;
-      this.toggleEffectOn("stars");
-      this.starSpeed = Math.max(Math.min(this.starSpeed + (vector * 2), DIAL_MAX), DIAL_MIN);
-    } else if (status.bJustPressed) {
-      this.toggleEffect("stars");
-    }
-    if (status.leftTrigger > 0 && status.leftStickClick) {
-      float vector = - 0.5 + status.leftTrigger;
+
+    this.effectSpeed.put("scroll", modifyEffectSpeed("scroll", status.y, status.yJustPressed, status));
+    this.effectSpeed.put("stars", modifyEffectSpeed("stars", status.b, status.bJustPressed, status));
+    this.effectSpeed.put("scope", modifyEffectSpeed("scope", status.x, status.xJustPressed, status));
+    this.effectSpeed.put("wave", modifyEffectSpeed("wave", status.a, status.aJustPressed, status));
+
+    if (status.lb && status.leftStickClick) {
+      float vector = -1;
       this.amplitudeDial = int(Math.max(Math.min(this.amplitudeDial + (vector * 2), DIAL_MAX), DIAL_MIN));
+      println("new amp " + this.amplitudeDial);
+    } else if (status.leftTrigger > 0 && status.leftStickClick) {
+      float vector = status.leftTrigger;
+      this.amplitudeDial = int(Math.max(Math.min(this.amplitudeDial + (vector * 2), DIAL_MAX), DIAL_MIN));
+      println("new amp " + this.amplitudeDial);
     } 
+  }
+  public float modifyEffectSpeed(String effectName, boolean buttonActive, boolean buttonWasActive, ControllerState status) {
+    if ( buttonActive && status.rb) {
+      float vector = 1;
+      this.toggleEffectOn(effectName);
+      return Math.max(Math.min(this.effectSpeed.get(effectName) - (vector * 2), DIAL_MAX), DIAL_MIN);
+    } else if (buttonActive && status.rightTrigger > 0) {
+      float vector = status.rightTrigger;
+      this.toggleEffectOn(effectName);
+      return Math.max(Math.min(this.effectSpeed.get(effectName) + (vector * 2), DIAL_MAX), DIAL_MIN);
+
+    } else if (buttonWasActive) {
+      this.toggleEffect(effectName);
+    }
+    return this.effectSpeed.get(effectName);
+    
   }
   
   public void toggleEffect(String effectName) {
