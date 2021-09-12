@@ -100,7 +100,7 @@ color starcolor(float bright) {
 }
 
 float warp() { //returns a number from 0 to 10, increasing and decreasing over time
-  return map(this.midi.starSpeed, 0, 127, 0, 40);
+  return map(this.midi.effectSpeed.get("stars"), 0, 127, 0, 40);
   //return map(cos(PI + frameCount / 60.0 / 5),-1,1,0,10);
 }
 

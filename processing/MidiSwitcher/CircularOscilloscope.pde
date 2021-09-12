@@ -6,7 +6,7 @@ public class CircularOscilloscope extends Drawable {
   ddf.minim.analysis.FFT fft;
   float[] fftFilter;
 
-  int secondsPerRadiusRefresh = 25;
+  int maxSecondsPerRadiusRefresh = 25;
   int minRadius;
   int maxRadius;
 
@@ -39,6 +39,7 @@ public class CircularOscilloscope extends Drawable {
   }
 
   private float radiusGrowth() {
+    float secondsPerRadiusRefresh = maxSecondsPerRadiusRefresh * map(this.midi.effectSpeed.get("scope"), MidiStatus.DIAL_MIN, MidiStatus.DIAL_MAX, 1, 0.05);
     return ((millis() % 100000)/2) / secondsPerRadiusRefresh % width;
   }
 

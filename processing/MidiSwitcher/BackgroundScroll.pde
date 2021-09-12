@@ -20,24 +20,26 @@ public class BackgroundScroll extends Drawable {
   }
   
   public int cycleMarker() {
-    int scrollSpeed = Math.round(map(this.midi.speedDial, MidiStatus.DIAL_MIN, MidiStatus.DIAL_MAX, 10, 100)); 
-    return ((millis() % (100000))/ 2) / scrollSpeed % width;
+    float scrollSpeed = map(this.midi.effectSpeed.get("scroll"), MidiStatus.DIAL_MIN, MidiStatus.DIAL_MAX, 0.01, 1); 
+    //return ((millis() % (100000))/ 2) / scrollSpeed % width;
+    return int(millis() * scrollSpeed) % width;
   }
   
   public void draw() {
-    if (this.drawing) {
+    if (!this.drawing) return;
+    push();
       beat.detect(audioIn.mix);
 
       this.mid = this.beat.isSnare() ? .3 : max(.1,this.mid * 0.96);
       int scrollAlpha = (int) map(this.mid, 0, 1, 0 ,255);
       //int scrollAlpha = 255;
     
-      blendMode(ADD);
+      blendMode(MULTIPLY);
       tint(adjustColor(color(255, scrollAlpha)));
       image(this.scroll, this.scrollSeam, 0, width, height);
       image(this.scroll, this.scrollSeam - width, 0, width, height);
       this.scrollSeam = this.cycleMarker();  
-    }  
+    pop();
   }
 
 }

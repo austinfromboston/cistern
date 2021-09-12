@@ -18,17 +18,12 @@ float h;
 
 public SoundWave(PApplet parent, MidiStatus midi) {
   super(parent, midi);
-}
-
-
-void setup() {
   this.mic = new processing.sound.AudioIn(parent, 0);
   mic.start();
   this.amp = new Amplitude(parent);
   amp.input(mic);
-      println("soundwave is active");
-
 }
+
 
 void mousePressed() {
   if(type == 0) {
@@ -65,6 +60,8 @@ void draw() {
     //background(0);
     blendMode(SCREEN);
     noFill();
+    float speedFactor = map(this.midi.effectSpeed.get("wave"), MidiStatus.DIAL_MIN, MidiStatus.DIAL_MAX, 0.5, 10);
+    int clock = int(frameCount * speedFactor);
     float strokeAdj = alphaAdj(1); 
 //-------red Line -------
     beginShape();
@@ -73,7 +70,7 @@ void draw() {
       micLevel = amp.analyze();
       //println("wave seeing ", micLevel);
       strokeWeight((100*micLevel+5) * strokeAdj);
-      h = ((rand4*micLevel)+50)*sin(w/(rand)) * pow(abs(sin(w * randW + frameCount * randS)), 5) + originY;
+      h = ((rand4*micLevel)+50)*sin(w/(rand)) * pow(abs(sin(w * randW + clock * randS)), 5) + originX;
       //curveVertex(w,h);
       curveVertex(h,w);
     }
@@ -84,7 +81,7 @@ void draw() {
       for(int w = -20; w < width + 20; w += 5){
       micLevel = amp.analyze();
       strokeWeight((100*micLevel+5)* strokeAdj);
-      h = (rand5*micLevel+50)*sin(w/(rand2)) * pow(abs(sin(w * randW + frameCount * randS)), 5) + originY;
+      h = (rand5*micLevel+50)*sin(w/(rand2)) * pow(abs(sin(w * randW + clock * randS)), 5) + originX;
       curveVertex(h,w);
     }
   endShape();
@@ -95,7 +92,7 @@ void draw() {
       micLevel = amp.analyze();
       //println(micLevel);
       strokeWeight((100*micLevel+5)* strokeAdj);
-      h = (rand6*micLevel+50)*sin(w/(rand3)) * pow(abs(sin(w * randW + frameCount * randS)), 5) + originY;
+      h = (rand6*micLevel+50)*sin(w/(rand3)) * pow(abs(sin(w * randW + clock * randS)), 5) + originX;
       curveVertex(h,w);
     }
   endShape();
