@@ -20,10 +20,8 @@ public class MidiDials implements SimpleMidiListener {
   }
    public void controllerChange(int channel, int number, int value) {
     //String dialName = "";
-    println("i have event");
     // just listen to Aperture dial
     if(number == APERTURE_DIAL) {
-    println("i have event dial");
       midi.golangApertureDial = value;
     }
   }

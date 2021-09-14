@@ -155,11 +155,9 @@ public class MidiStatus implements SimpleMidiListener {
     if (status.lb && status.leftStickClick) {
       float vector = -1;
       this.amplitudeDial = int(Math.max(Math.min(this.amplitudeDial + (vector * 2), DIAL_MAX), DIAL_MIN));
-      println("new amp " + this.amplitudeDial);
     } else if (status.leftTrigger > 0 && status.leftStickClick) {
       float vector = status.leftTrigger;
       this.amplitudeDial = int(Math.max(Math.min(this.amplitudeDial + (vector * 2), DIAL_MAX), DIAL_MIN));
-      println("new amp " + this.amplitudeDial);
     } 
   }
   public float modifyEffectSpeed(String effectName, boolean buttonActive, boolean buttonWasActive, ControllerState status) {
