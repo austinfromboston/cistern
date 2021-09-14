@@ -96,7 +96,7 @@ void restartStar(int i) {
 color starcolor(float bright) {
   colorMode(HSB);
   float sat = map(warp(),1,100,0,100);
-  return color(150,sat,bright);
+  return color(150,sat,bright,alphaAdj());
 }
 
 float warp() { //returns a number from 0 to 10, increasing and decreasing over time

@@ -67,7 +67,8 @@ void setup()
   size(1100, 900, P3D);
 
   //String ip = "localhost";
-  String ip = "192.168.10.20";  
+  String ip = "192.168.10.20";
+  String ip2 = "192.168.10.3";
   minim = new Minim(this);
   in = minim.getLineIn();
 
@@ -81,7 +82,20 @@ void setup()
   beat = new BeatDetect();
   beat.detectMode(BeatDetect.FREQ_ENERGY);
 
+  float proxyOriginX = width /2;
+  float proxyOriginY = 3 * height / 4;
+  //layout = layout.flip(0,0,0).multiplied(115).o  ffset(proxyOriginX, 0, proxyOriginY);
+  layout = layout.flip(0,0,0).flipX(0).multiplied(115).offset(proxyOriginX, 0, proxyOriginY);
 
+  //eyelid = new Eyelid(this, midiStatus);
+  opcIn = new OPCListener(8890, layout.points.size());
+  opcDisplay = new ProxyDisplay(this, opcIn, midiStatus, layout);
+  
+  
+  
+  //opcLayout(layout, 37, 120, ip);
+  artnetLayout(layout, 38, 120, ip);
+  artnetLayout(layout, 38, 120, ip2);
 
   // patterns
   geoBubbles = new GeoBubbles(this, midiStatus);
@@ -89,14 +103,12 @@ void setup()
   circleWaltz = new CircleWaltz(this, midiStatus);
   discoFloor = new DiscoFloor(this, midiStatus);
   koosh = new Koosh(this, midiStatus);
-  //rainbowEq = new RainbowEQ(this, midiStatus);
   plaid = new Plaid(this, midiStatus);
   nothing = new Nothing(this, midiStatus);
 
   // effects
   backgroundScroll = new BackgroundScroll(this, in, beat, midiStatus);
   circleScope = new CircularOscilloscope(this, beat, in, midiStatus, evenOffset, int(evenOffset + ledPixelSpacing * ledStripCount * 1.8));
-  //starField = new StarField(this, midiStatus);
   soundWave = new SoundWave(this, midiStatus);
   warpDrive = new WarpDrive(this, midiStatus);
 
@@ -109,18 +121,7 @@ void setup()
   selectablePatterns = new Drawable[]{ geoBubbles, discoFloor, koosh, plaid, circleWaltz, soundBlock, nothing };
 
 
-  float proxyOriginX = width /2;
-  float proxyOriginY = 3 * height / 4;
-  //layout = layout.flip(0,0,0).multiplied(115).o  ffset(proxyOriginX, 0, proxyOriginY);
-  layout = layout.flip(0,0,0).flipX(0).multiplied(115).offset(proxyOriginX, 0, proxyOriginY);
 
-  //eyelid = new Eyelid(this, midiStatus);
-  opcIn = new OPCListener(8890, layout.points.size());
-  opcDisplay = new ProxyDisplay(this, opcIn, midiStatus, layout);
-  
-  //opcLayout(layout, 37, 120, ip);
-  artnetLayout(layout, 38, 120, ip);
-  artnetLayout(layout, 38, 120, "192.168.10.3");
 }
 
 

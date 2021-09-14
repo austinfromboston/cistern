@@ -37,7 +37,8 @@ public class Drawable {
   }
   
   public float alphaAdj(float maxAlpha) {
-    return map(midi.amplitudeDial, 0, 127, 0, maxAlpha);
+    float val =  map(midi.amplitudeDial, 0, 127, 0, maxAlpha);
+    return val;
   }
   
   public float hueAdj() {

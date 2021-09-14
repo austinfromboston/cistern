@@ -18,6 +18,7 @@ public class CircleWaltz extends Drawable {
     //strokeWeight(0);
     dialOrigins(1);
     translate(originX, originY);
+    colorMode(RGB);
   
     updateCntByControls();
   
@@ -31,7 +32,7 @@ public class CircleWaltz extends Drawable {
       // 获得每一个圆的圆心、半径、颜色
       PVector circleCenter = getCenterByTheta(thetaC, time, scale);
       float circleSize = getSizeByTheta(thetaC, time, scale);
-      color c = adjustColor(getColorByTheta(thetaC, time));
+      color c = getColorByTheta(thetaC, time);
   
       // 绘制每一圆的所有顶点
       stroke(c);
@@ -73,6 +74,6 @@ public class CircleWaltz extends Drawable {
       g = 0.6 + 0.4 * cos(th - PI / 3), 
       b = 0.6 + 0.4 * cos(th - PI * 2.0 / 3.0), 
       alpha = map(circleCnt, MIN_CIRCLE_CNT, MAX_CIRCLE_CNT, 150, 30);
-    return color(r * 255, g * 255, b * 255, alpha);
+    return color(r * 255, g * 255, b * 255, alphaAdj(alpha));
   }
 }
