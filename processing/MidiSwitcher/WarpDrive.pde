@@ -2,7 +2,7 @@ public class WarpDrive extends Drawable {
 
 
 
-int n = 500; //number of warp stars
+int n = 5000; //number of warp stars
 
 float[] angle;
 float[] dist;
@@ -37,6 +37,7 @@ int randSeed = 0;
 
 void draw() {
   if (!this.drawing) { return; }
+  push();
   randSeed += frameCount;
   randomSeed(randSeed % 120); //Make a predictable pattern (useful for making the effect consistent)
   dialOrigins();
@@ -79,6 +80,7 @@ void draw() {
   textSize(30);
   textAlign(LEFT,TOP);
   text("WARP "+round(warp()*10)/10.0,40,40);
+  pop();
 }
 
 void restartStar(int i) {
@@ -93,12 +95,13 @@ void restartStar(int i) {
 //Makes stars blue when faster
 color starcolor(float bright) {
   colorMode(HSB);
-  float sat = map(warp(),1,10,0,100);
-  return color(150,sat,bright);
+  float sat = map(warp(),1,100,0,100);
+  return color(150,sat,bright,alphaAdj());
 }
 
 float warp() { //returns a number from 0 to 10, increasing and decreasing over time
-  return map(cos(PI + frameCount / 60.0 / 5),-1,1,0,10);
+  return map(this.midi.effectSpeed.get("stars"), 0, 127, 0, 40);
+  //return map(cos(PI + frameCount / 60.0 / 5),-1,1,0,10);
 }
 
 }

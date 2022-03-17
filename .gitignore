@@ -1,3 +1,4 @@
 *.autosave
 .DS_Store
+._.DS_Store
 .idea

@@ -19,18 +19,18 @@ public class ProxyDisplay {
     this.midi = midi;
     this.opcIn = opcIn;
     this.layout = layout;
-    this.smallPoint = 2;
+    this.smallPoint = 4;
   }
   
   void draw() {
     if(!allowProxy) {
       return;
     }
-    blendMode(ADD);
+    blendMode(LIGHTEST);
     //tint(255, 255);
     noStroke();
     //background(0);
-    float proxyAlpha = map(this.midi.gainDial, 0, 127, 255, 0);
+    float proxyAlpha = map(this.midi.gainDial, 0, 127, 0, 255);
     if(this.midi.padEffectActive) {
       proxyAlpha = map(this.midi.padEffectLevel, 0, 127, 150, 255);
     }
@@ -50,6 +50,6 @@ public class ProxyDisplay {
       //println(String.format("showing x %f z %f", mappedPoint.x, mappedPoint.z));
       ellipse((int) mappedPoint.x, (int) mappedPoint.z, smallPoint, smallPoint);
     }
-    
+    blendMode(EXCLUSION); 
   }
 }

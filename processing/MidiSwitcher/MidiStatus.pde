@@ -25,7 +25,12 @@ int SATURATION_DIAL = 7;
 int AMPLITUDE_DIAL = 8;
 int X_LOCATION_DIAL = 7;
 int Y_LOCATION_DIAL = 6;
+int COLOR_DIAL = 5;
 
+int RIGHT_STICK_Y = APERTURE_DIAL;
+int RIGHT_STICK_X = DIRECTION_DIAL;
+int LEFT_STICK_Y = Y_LOCATION_DIAL;
+int LEFT_STICK_X = X_LOCATION_DIAL;
 
 public class MidiStatus implements SimpleMidiListener {
   PApplet parent;
@@ -35,6 +40,8 @@ public class MidiStatus implements SimpleMidiListener {
   public int gainDial;
   public int patternSelectionDial;
   public int amplitudeDial;
+  public float starSpeed;
+  public float backgroundScrollSpeed;
   public boolean sparklePadActive;
   public int sparklePadLevel;
   public static final int DIAL_MIN = 0;
@@ -44,12 +51,17 @@ public class MidiStatus implements SimpleMidiListener {
   public MidiEcho midiEcho; // echos allowed commands from the java board to Go
   public MidiProxy midiProxy;  
   public MidiDials midiDials;
+  public GamepadStatus gamepadStatus;
   private boolean[] padEffectsActive;
   private int[] padEffectLevels;
   public boolean padEffectActive;
   public int padEffectLevel;
   public int[] dialSettings;
+  public HashMap<String, Integer> lastUpdates;
+  public HashMap<String, Float> effectSpeed; 
   public int golangApertureDial = 127;
+  public ArrayList<String> activeEffects;
+  //public boolean scopeActive = false;
   
   public MidiStatus(PApplet parent) {
     this.parent = parent;
@@ -58,35 +70,153 @@ public class MidiStatus implements SimpleMidiListener {
     this.speedDial = 66;
     this.sparklePadLevel = 0;
     this.sparklePadActive = false;
-    this.gainDial = 0;
-    this.amplitudeDial = 0;
-    this.patternSelectionDial = 64;
+    this.gainDial = 127;
+    this.amplitudeDial = 127;
+    this.patternSelectionDial = 0;
     this.padEffectLevels = new int[50];
+    this.starSpeed = 1;
+    this.backgroundScrollSpeed = 64;
+    this.effectSpeed = new HashMap<String, Float>();
+    this.effectSpeed.put("stars", 1.0);
+    this.effectSpeed.put("scroll", 64.0);
+    this.effectSpeed.put("scope", 64.0);
+    this.effectSpeed.put("wave", 64.0);
+
+    this.lastUpdates = new HashMap<String, Integer>();
     Arrays.fill(padEffectLevels, 0);
     this.padEffectsActive = new boolean[50];
     Arrays.fill(padEffectsActive, false);
     this.dialSettings = new int[20];
     Arrays.fill(dialSettings, 64);
-    
+    this.gamepadStatus = new GamepadStatus(parent);
+    this.activeEffects = new ArrayList<String>();
     MidiBus.list(); // List all available Midi devices on STDOUT. This will show each device's index and name.
     String[] devices = MidiBus.availableInputs();
-    if(java.util.Arrays.asList(devices).indexOf("LPD8")>-1) {
-      this.myBus = new MidiBus(this, "Akai LPD8 Wireless", "Akai LPD8 Wireless", "wireless"); // Create a new MidiBus object
-      this.proxyBus = new MidiBus(midiProxy, "LPD8", "LPD8", "LPD8"); 
-
-    } else {
-      this.myBus = new MidiBus(this, "Wireless [hw:1,0,0]", "Wireless [hw:1,0,0]", "wireless"); // Create a new MidiBus object
-      this.proxyBus = new MidiBus(midiProxy, "LPD8 [hw:2,0,0]", "LPD8 [hw:2,0,0]", "LPD8"); 
+    for(String deviceDescription: devices) {
+      String[] wirelessMatch = match(deviceDescription, "(?i)wireless");
+      String[] lpdMatch = match(deviceDescription, "(?i)lpd8");
+      if (wirelessMatch != null) {
+        this.myBus = new MidiBus(this, deviceDescription, deviceDescription, "wireless"); 
+      } else if (lpdMatch != null) {
+        this.proxyBus = new MidiBus(midiProxy, deviceDescription, deviceDescription, "LPD8"); 
+      }
     }
     midiProxy = new MidiProxy("localhost", 3333);
+    if (this.proxyBus != null) {
+      this.proxyBus.addMidiListener(midiProxy);
+    }
     midiEcho = new MidiEcho(midiProxy);
-    midiDials = new MidiDials(this);
+    //midiDials = new MidiDials(this);
+    if (this.proxyBus != null) {
+      this.proxyBus.addMidiListener(midiProxy);
+      //this.proxyBus.addMidiListener(midiDials);
+    }
+    if (this.proxyBus != null && this.myBus != null) {
+      this.myBus.addMidiListener(midiEcho);
+    }
     //this.myBus.addInput("Akai LPD8 Wireless");
-    this.proxyBus.addMidiListener(midiProxy);
-    this.proxyBus.addMidiListener(midiDials);
-    this.myBus.addMidiListener(midiEcho);
   }
   
+  public void checkGamepad() {
+    ControllerState status = this.gamepadStatus.update();
+    if (!status.isConnected) {
+      return;
+    }
+    if (status.leftStickY != 0) {
+      this.adjustDialWrapped(Y_LOCATION_DIAL, 0- status.leftStickY);
+    }
+    if (status.leftStickX != 0) {
+      this.adjustDialWrapped(X_LOCATION_DIAL, status.leftStickX);
+    }
+    if (status.dpadLeft) {
+      this.patternSelectionDial = this.adjustDialWrapped(PATTERN_SELECTOR_DIAL, 2.2);
+    }
+    if (status.dpadRight) {
+      this.patternSelectionDial = this.adjustDialWrapped(PATTERN_SELECTOR_DIAL, -2.2);
+    }
+    if (status.dpadUp) {
+      this.speedDial = this.adjustDial(SPEED_DIAL, 1);
+    }
+    if (status.dpadDown) {
+      this.speedDial = this.adjustDial(SPEED_DIAL, -1);
+    }
+    if (status.rightStickX != 0) {
+      this.adjustDialWrapped(COLOR_DIAL, status.rightStickX);
+    }
+    if (status.rightStickY != 0) {
+      this.adjustDialWrapped(APERTURE_DIAL, status.rightStickY);
+    }
+
+    this.effectSpeed.put("scroll", modifyEffectSpeed("scroll", status.y, status.yJustPressed, status));
+    this.effectSpeed.put("stars", modifyEffectSpeed("stars", status.b, status.bJustPressed, status));
+    this.effectSpeed.put("scope", modifyEffectSpeed("scope", status.x, status.xJustPressed, status));
+    this.effectSpeed.put("wave", modifyEffectSpeed("wave", status.a, status.aJustPressed, status));
+
+    if (status.lb && status.leftStickClick) {
+      float vector = -1;
+      this.amplitudeDial = int(Math.max(Math.min(this.amplitudeDial + (vector * 2), DIAL_MAX), DIAL_MIN));
+    } else if (status.leftTrigger > 0 && status.leftStickClick) {
+      float vector = status.leftTrigger;
+      this.amplitudeDial = int(Math.max(Math.min(this.amplitudeDial + (vector * 2), DIAL_MAX), DIAL_MIN));
+    } 
+  }
+  public float modifyEffectSpeed(String effectName, boolean buttonActive, boolean buttonWasActive, ControllerState status) {
+    if ( buttonActive && status.rb) {
+      float vector = 1;
+      this.toggleEffectOn(effectName);
+      return Math.max(Math.min(this.effectSpeed.get(effectName) - (vector * 2), DIAL_MAX), DIAL_MIN);
+    } else if (buttonActive && status.rightTrigger > 0) {
+      float vector = status.rightTrigger;
+      this.toggleEffectOn(effectName);
+      return Math.max(Math.min(this.effectSpeed.get(effectName) + (vector * 2), DIAL_MAX), DIAL_MIN);
+
+    } else if (buttonWasActive) {
+      this.toggleEffect(effectName);
+    }
+    return this.effectSpeed.get(effectName);
+    
+  }
+  
+  public void toggleEffect(String effectName) {
+    if (this.activeEffects.contains(effectName)) {
+      this.activeEffects.remove(effectName);
+    } else {
+      this.activeEffects.add(effectName);
+    }
+  }
+
+  public void toggleEffectOn(String effectName) {
+    if (this.activeEffects.contains(effectName)) {
+      // do nothing
+    } else {
+      this.activeEffects.add(effectName);
+    }
+  }
+  public int adjustDial(int dialName, float vector) {
+    int newSetting = Math.max(Math.min(this.dialSettings[dialName] + int(vector * 2), DIAL_MAX), DIAL_MIN);
+    this.dialSettings[dialName] = newSetting;
+    return newSetting;
+  }
+
+  public int adjustDialWrapped(int dialName, float vector) {
+    int oldSetting = this.dialSettings[dialName];
+    if (oldSetting == DIAL_MAX && vector > 0) {
+      this.dialSettings[dialName] = DIAL_MIN;
+    } else if (oldSetting == DIAL_MIN && vector < 0) {
+      this.dialSettings[dialName] = DIAL_MAX;
+    }
+    return adjustDial(dialName, vector);
+  }
+  
+  public int adjustDialPatternWrapped(int dialName, float vector) {
+    int oldSetting = this.dialSettings[dialName];
+    if (oldSetting == DIAL_MAX && vector > 0) {
+      this.adjustDialWrapped(PATTERN_SELECTOR_DIAL, 2.5);
+    } else if (oldSetting == DIAL_MIN && vector < 0) {
+      this.adjustDialWrapped(PATTERN_SELECTOR_DIAL, -2.5);
+    }
+    return this.adjustDialWrapped(dialName, vector);
+  }
   
   public void controllerChange(int channel, int number, int value) {
     String dialName = "";

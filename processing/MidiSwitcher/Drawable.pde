@@ -37,7 +37,12 @@ public class Drawable {
   }
   
   public float alphaAdj(float maxAlpha) {
-    return map(midi.amplitudeDial, 0, 127, maxAlpha, 0);
+    float val =  map(midi.amplitudeDial, 0, 127, 0, maxAlpha);
+    return val;
+  }
+  
+  public float hueAdj() {
+    return map(this.midi.dialSettings[COLOR_DIAL], MidiStatus.DIAL_MIN, MidiStatus.DIAL_MAX, -127, 127);
   }
   
   

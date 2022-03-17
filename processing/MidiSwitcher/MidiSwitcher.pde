@@ -2,22 +2,26 @@ import themidibus.*;
 
 
 OPC opc;
+ArtnetPixels artnetPix;
 CircularOscilloscope circleScope;
 BackgroundScroll backgroundScroll;
-StarField starField;
-PerlinNoise perlinNoise;
+//StarField starField;
 GeoBubbles geoBubbles;
 WarpDrive warpDrive; 
-Colorwander colorWander;
 SoundBlock soundBlock;
 SoundWave soundWave;
-Eyelid eyelid;
+//Eyelid eyelid;
+CircleWaltz circleWaltz;
+DiscoFloor discoFloor;
+Koosh koosh;
+Plaid plaid;
+Nothing nothing;
 
 MidiStatus midiStatus;
 PImage splash;
 Minim minim;
 AudioInput in;
-SyphonSender syphonSender;
+
 //AudioOutput out;
 //FFT fft;
 //float[] fftFilter;
@@ -56,13 +60,15 @@ float size = 100;
   boolean allowProxy;
   
 Drawable[] selectablePatterns;
+HashMap<String, Drawable> allowedEffects;
 
 void setup()
 {
-  size(1000, 700, P3D);
+  size(1100, 900, P3D);
 
-  String ip = "localhost";
-  
+  //String ip = "localhost";
+  String ip = "192.168.10.20";
+  String ip2 = "192.168.10.3";
   minim = new Minim(this);
   in = minim.getLineIn();
 
@@ -71,35 +77,51 @@ void setup()
 
   midiStatus = new MidiStatus(this);
   layout = new LayoutLoader();
-  layout.loadList("data/space_potty_fan.json");
+  //layout.loadList("data/awesome_fan_2019_onsite.json");
+  layout.loadList("data/awesome_2021_lights.json");
 
   beat = new BeatDetect();
   beat.detectMode(BeatDetect.FREQ_ENERGY);
 
-  backgroundScroll = new BackgroundScroll(this, in, beat, midiStatus);
-  circleScope = new CircularOscilloscope(this, beat, in, midiStatus, evenOffset, int(evenOffset + ledPixelSpacing * ledStripCount * 1.8));
-  starField = new StarField(this, midiStatus);
-  perlinNoise = new PerlinNoise(this, midiStatus);
-  colorWander = new Colorwander(this, midiStatus);
-  //colorWander.setup();
+  float proxyOriginX = width /2;
+  float proxyOriginY = 3 * height / 4;
+  //layout = layout.flip(0,0,0).multiplied(115).o  ffset(proxyOriginX, 0, proxyOriginY);
+  layout = layout.flip(0,0,0).flipX(0).multiplied(115).offset(proxyOriginX, 0, proxyOriginY);
+
+  //eyelid = new Eyelid(this, midiStatus);
+  opcIn = new OPCListener(8890, layout.points.size());
+  opcDisplay = new ProxyDisplay(this, opcIn, midiStatus, layout);
+  
+  
+  
+  // patterns
   geoBubbles = new GeoBubbles(this, midiStatus);
   soundBlock = new SoundBlock(this, midiStatus);
+  circleWaltz = new CircleWaltz(this, midiStatus);
+  discoFloor = new DiscoFloor(this, midiStatus);
+  koosh = new Koosh(this, midiStatus);
+  plaid = new Plaid(this, midiStatus);
+  nothing = new Nothing(this, midiStatus);
+
+  // effects
+  backgroundScroll = new BackgroundScroll(this, in, beat, midiStatus);
+  circleScope = new CircularOscilloscope(this, beat, in, midiStatus, evenOffset, int(evenOffset + ledPixelSpacing * ledStripCount * 1.8));
   soundWave = new SoundWave(this, midiStatus);
   warpDrive = new WarpDrive(this, midiStatus);
 
-  selectablePatterns = new Drawable[]{ backgroundScroll, circleScope, starField, colorWander, geoBubbles, soundBlock, soundWave, perlinNoise, warpDrive };
-  //selectablePatterns = new Drawable[]{ colorWander };
+  allowedEffects = new HashMap<String, Drawable>();
+  allowedEffects.put("scope", circleScope);
+  allowedEffects.put("scroll", backgroundScroll);
+  allowedEffects.put("wave", soundWave);
+  allowedEffects.put("stars", warpDrive);
+  
+  selectablePatterns = new Drawable[]{ geoBubbles, discoFloor, koosh, plaid, circleWaltz, soundBlock, nothing };
 
-  float proxyOriginX = width /2;
-  float proxyOriginY = 3 * height / 4;
-  //layout = layout.flip(0,0,0).multiplied(115).offset(proxyOriginX, 0, proxyOriginY);
-  layout = layout.flip(0,0,0).flipX(0).multiplied(115).offset(proxyOriginX, 0, proxyOriginY);
+ //opcLayout(layout, 37, 120, ip);
+  artnetLayout(layout, 38, 120, ip);
+  artnetLayout(layout, 38, 120, ip2);
 
-  eyelid = new Eyelid(this, midiStatus);
-  opcIn = new OPCListener(8890, layout.points.size());
-  opcDisplay = new ProxyDisplay(this, opcIn, midiStatus, layout);
-  syphonSender = new SyphonSender(this);  
-  opcLayout(layout, 37, 120, ip);
+
 }
 
 
@@ -114,13 +136,39 @@ void opcLayout(LayoutLoader layout, int ledStripCount, int ledsPerStrip, String 
 }
 
 
+void artnetLayout(LayoutLoader layout, int ledStripCount, int ledsPerStrip, String ip) {
+    int universes = ledStripCount;
+
+    ArtnetPixels artnetPix = new ArtnetPixels(this, ip, false, universes, ledsPerStrip);
+    artnetPix.pixelLayout(layout);
+}
+
+void currentPattern(Drawable pattern, String[] effects) {
+  push();  
+  fill(255);
+    
+  textSize(30);
+  textAlign(LEFT,TOP);
+  text(pattern.getClass().getSimpleName(),800,800);
+  if (effects.length > 0) {
+    text("(" + join(effects, ",")+")",800,850);
+  }
+
+  pop();
+}
   
 void draw()
 {
+  midiStatus.checkGamepad();
   int selectedPattern = round(map(midiStatus.dialSettings[PATTERN_SELECTOR_DIAL], 0, 127, 0, selectablePatterns.length-1));
   for(int i = 0; i< selectablePatterns.length; i++) {
     selectablePatterns[i].setDrawing(i == selectedPattern);
   }
+  // display active effects
+  for(String key : allowedEffects.keySet()){
+    allowedEffects.get(key).setDrawing(midiStatus.activeEffects.contains(key));
+  }
+
   this.allowProxy = selectablePatterns[selectedPattern].allowProxy();
   if(lastPattern != selectedPattern) {
     selectablePatterns[selectedPattern].setup();
@@ -128,4 +176,8 @@ void draw()
   }
   //System.gc();
   selectablePatterns[selectedPattern].addBackground();
+  String[] patternNames = new String[]{};
+  blendMode(MULTIPLY);
+  patternNames = midiStatus.activeEffects.toArray(patternNames);
+  currentPattern(selectablePatterns[selectedPattern], patternNames);
 }
