@@ -1,8 +1,8 @@
 from math import pi, cos, sin
 from typing import Dict
 
-Address = (int, int)
-Coord = (float, float, float)
+Address = tuple[int, int]
+Coord = tuple[float, float, float]
 
 
 def hourglass_coords(num_wands, mount_radius, declination_deg, wand_length, pts_per_wand) -> Dict[Address, Coord]:
@@ -58,5 +58,9 @@ if __name__ == '__main__':
     soak_proto = hourglass_coords(num_wands=18, mount_radius=0.1, declination_deg=40, wand_length=2, pts_per_wand=120)
 
     print(soak_proto)
+    
+    transposed = {address: (x, z, y) for address, (x, y, z) in soak_proto.items()}
+
+    print(transposed)
 
 
