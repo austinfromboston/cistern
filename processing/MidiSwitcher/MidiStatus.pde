@@ -255,12 +255,13 @@ public class MidiStatus implements SimpleMidiListener {
       this.golangApertureDial += 2; 
     }
     if (e.getKeyCode() == 65) {
-      dialSettings[PATTERN_SELECTOR_DIAL] += 5; 
+      this.adjustDialWrapped(PATTERN_SELECTOR_DIAL, 5);
+      //      dialSettings[PATTERN_SELECTOR_DIAL] += 5; 
 
     }
-        if (e.getKeyCode() == 66) {
-      dialSettings[PATTERN_SELECTOR_DIAL] -= 5; 
-
+    if (e.getKeyCode() == 66) {
+      this.adjustDialWrapped(PATTERN_SELECTOR_DIAL, -5);  
+      //dialSettings[PATTERN_SELECTOR_DIAL] -= 5; 
     }
   }
   

@@ -70,7 +70,7 @@ void setup()
   String ip = "192.168.10.20";
   String ip2 = "192.168.10.3";
   minim = new Minim(this);
-  in = minim.getLineIn();
+  in = minim.getLineIn(Minim.MONO);
 
   //fft = new FFT(in.bufferSize(), in.sampleRate());
   //fftFilter = new float[fft.specSize()];
