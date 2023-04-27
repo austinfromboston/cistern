@@ -1,5 +1,6 @@
 from math import pi, cos, sin
 from typing import Dict
+import json
 
 Address = tuple[int, int]
 Coord = tuple[float, float, float]
@@ -55,12 +56,23 @@ def hourglass_coords(num_wands, mount_radius, declination_deg, wand_length, pts_
 
 if __name__ == '__main__':
 
-    soak_proto = hourglass_coords(num_wands=18, mount_radius=0.1, declination_deg=40, wand_length=2, pts_per_wand=120)
+    soak_proto = hourglass_coords(num_wands=18, mount_radius=0.15, declination_deg=35, wand_length=2, pts_per_wand=120)
 
-    print(soak_proto)
+    #print(soak_proto)
     
-    transposed = {address: (x, z, y) for address, (x, y, z) in soak_proto.items()}
+    # this version used the channel and the point as a key
+    # transposed = {address: (x, z, y) for address, (x, y, z) in soak_proto.items()}
+    # print(transposed)
+    #transposed = [{"point": (x, z, y)} for address, (x,y,z) in soak_proto.items()]
+    #print(json.dumps(transposed, indent=2))
+    
+    print("[")
+    protolen = len(soak_proto.values())
+    for idx, (x, y, z) in enumerate(soak_proto.values()):
+        endchar = "," if idx + 1 < protolen else ""
+        print('  {"point": [%f, %f, %f]}%s' % (x, y, z, endchar))
+    print("]")
+    
 
-    print(transposed)
 
 
