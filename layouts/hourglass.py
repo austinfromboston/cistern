@@ -1,6 +1,8 @@
 from math import pi, cos, sin
 from typing import Dict
 import json
+import sys
+import getopt
 
 Address = tuple[int, int]
 Coord = tuple[float, float, float]
@@ -56,6 +58,7 @@ def hourglass_coords(num_wands, mount_radius, declination_deg, wand_length, pts_
 
 if __name__ == '__main__':
 
+    #soak_proto = hourglass_coords(num_wands=18, mount_radius=0.15, declination_deg=35, wand_length=2, pts_per_wand=120)
     soak_proto = hourglass_coords(num_wands=18, mount_radius=0.15, declination_deg=35, wand_length=2, pts_per_wand=120)
 
     #print(soak_proto)
@@ -65,14 +68,33 @@ if __name__ == '__main__':
     # print(transposed)
     #transposed = [{"point": (x, z, y)} for address, (x,y,z) in soak_proto.items()]
     #print(json.dumps(transposed, indent=2))
-    
-    print("[")
-    protolen = len(soak_proto.values())
-    for idx, (x, y, z) in enumerate(soak_proto.values()):
-        endchar = "," if idx + 1 < protolen else ""
-        print('  {"point": [%f, %f, %f]}%s' % (x, y, z, endchar))
-    print("]")
-    
+    format = "opc"
+    opts, args = getopt.getopt(sys.argv[1:], "hf", ["format="])
+    for opt, arg in opts:
+        if opt == "-h":
+            print("hourglass.py -f [opc|csv]")
+            sys.exit()
+        elif opt in ("-f", "--format"):
+            # print("opt found '%s' = '%s'" % (opt, arg))
+            format = arg
+        else:
+            pass
+            # print("opt found '%s'" % opt)
+
+    if format == "opc":
+        print("[")
+        protolen = len(soak_proto.values())
+        for idx, (x, y, z) in enumerate(soak_proto.values()):
+            endchar = "," if idx + 1 < protolen else ""
+            print('  {"point": [%f, %f, %f]}%s' % (x, y, z, endchar))
+        print("]")
+    elif format == "csv":
+        print('x,y,z')
+        for idx, (x, y, z) in enumerate(soak_proto.values()):
+            print('%f,%f,%f' % (x, y, z))
+    else:
+        print("format must be opc or csv, not '%s'" % (format))
+        
 
 
 
