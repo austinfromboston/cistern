@@ -20,7 +20,7 @@ Nothing nothing;
 MidiStatus midiStatus;
 PImage splash;
 Minim minim;
-AudioInput in;
+AudioInput in;  
 
 //AudioOutput out;
 //FFT fft;
@@ -77,8 +77,9 @@ void setup()
 
   midiStatus = new MidiStatus(this);
   layout = new LayoutLoader();
+  layout.loadList("data/fanboy_strips.json");
   //layout.loadList("data/awesome_fan_2019_onsite.json");
-  layout.loadList("data/awesome_2021_lights.json");
+  //layout.loadList("data/awesome_2021_lights.json");
 
   beat = new BeatDetect();
   beat.detectMode(BeatDetect.FREQ_ENERGY);
@@ -115,11 +116,11 @@ void setup()
   allowedEffects.put("wave", soundWave);
   allowedEffects.put("stars", warpDrive);
   
-  selectablePatterns = new Drawable[]{ geoBubbles, discoFloor, koosh, plaid, circleWaltz, soundBlock, nothing };
+  selectablePatterns = new Drawable[]{ geoBubbles, discoFloor, koosh, plaid, circleWaltz, soundBlock, circleScope, backgroundScroll, soundWave, warpDrive, nothing };
 
  //opcLayout(layout, 37, 120, ip);
-  artnetLayout(layout, 38, 120, ip);
-  artnetLayout(layout, 38, 120, ip2);
+  artnetLayout(layout, 19, 120, ip);
+  //artnetLayout(layout, 38, 120, ip2);
 
 
 }
@@ -159,7 +160,7 @@ void currentPattern(Drawable pattern, String[] effects) {
   
 void draw()
 {
-  midiStatus.checkGamepad();
+  //midiStatus.checkGamepad();
   int selectedPattern = round(map(midiStatus.dialSettings[PATTERN_SELECTOR_DIAL], 0, 127, 0, selectablePatterns.length-1));
   for(int i = 0; i< selectablePatterns.length; i++) {
     selectablePatterns[i].setDrawing(i == selectedPattern);

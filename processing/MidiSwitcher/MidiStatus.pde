@@ -51,7 +51,7 @@ public class MidiStatus implements SimpleMidiListener {
   public MidiEcho midiEcho; // echos allowed commands from the java board to Go
   public MidiProxy midiProxy;  
   public MidiDials midiDials;
-  public GamepadStatus gamepadStatus;
+  //public GamepadStatus gamepadStatus;
   private boolean[] padEffectsActive;
   private int[] padEffectLevels;
   public boolean padEffectActive;
@@ -88,7 +88,7 @@ public class MidiStatus implements SimpleMidiListener {
     Arrays.fill(padEffectsActive, false);
     this.dialSettings = new int[20];
     Arrays.fill(dialSettings, 64);
-    this.gamepadStatus = new GamepadStatus(parent);
+    //this.gamepadStatus = new GamepadStatus(parent);
     this.activeEffects = new ArrayList<String>();
     MidiBus.list(); // List all available Midi devices on STDOUT. This will show each device's index and name.
     String[] devices = MidiBus.availableInputs();
@@ -117,65 +117,66 @@ public class MidiStatus implements SimpleMidiListener {
     //this.myBus.addInput("Akai LPD8 Wireless");
   }
   
-  public void checkGamepad() {
-    ControllerState status = this.gamepadStatus.update();
-    if (!status.isConnected) {
-      return;
-    }
-    if (status.leftStickY != 0) {
-      this.adjustDialWrapped(Y_LOCATION_DIAL, 0- status.leftStickY);
-    }
-    if (status.leftStickX != 0) {
-      this.adjustDialWrapped(X_LOCATION_DIAL, status.leftStickX);
-    }
-    if (status.dpadLeft) {
-      this.patternSelectionDial = this.adjustDialWrapped(PATTERN_SELECTOR_DIAL, 2.2);
-    }
-    if (status.dpadRight) {
-      this.patternSelectionDial = this.adjustDialWrapped(PATTERN_SELECTOR_DIAL, -2.2);
-    }
-    if (status.dpadUp) {
-      this.speedDial = this.adjustDial(SPEED_DIAL, 1);
-    }
-    if (status.dpadDown) {
-      this.speedDial = this.adjustDial(SPEED_DIAL, -1);
-    }
-    if (status.rightStickX != 0) {
-      this.adjustDialWrapped(COLOR_DIAL, status.rightStickX);
-    }
-    if (status.rightStickY != 0) {
-      this.adjustDialWrapped(APERTURE_DIAL, status.rightStickY);
-    }
+  //jamepad library doesn't work with apple silicon
+  //public void checkGamepad() {
+  //  ControllerState status = this.gamepadStatus.update();
+  //  if (!status.isConnected) {
+  //    return;
+  //  }
+  //  if (status.leftStickY != 0) {
+  //    this.adjustDialWrapped(Y_LOCATION_DIAL, 0- status.leftStickY);
+  //  }
+  //  if (status.leftStickX != 0) {
+  //    this.adjustDialWrapped(X_LOCATION_DIAL, status.leftStickX);
+  //  }
+  //  if (status.dpadLeft) {
+  //    this.patternSelectionDial = this.adjustDialWrapped(PATTERN_SELECTOR_DIAL, 2.2);
+  //  }
+  //  if (status.dpadRight) {
+  //    this.patternSelectionDial = this.adjustDialWrapped(PATTERN_SELECTOR_DIAL, -2.2);
+  //  }
+  //  if (status.dpadUp) {
+  //    this.speedDial = this.adjustDial(SPEED_DIAL, 1);
+  //  }
+  //  if (status.dpadDown) {
+  //    this.speedDial = this.adjustDial(SPEED_DIAL, -1);
+  //  }
+  //  if (status.rightStickX != 0) {
+  //    this.adjustDialWrapped(COLOR_DIAL, status.rightStickX);
+  //  }
+  //  if (status.rightStickY != 0) {
+  //    this.adjustDialWrapped(APERTURE_DIAL, status.rightStickY);
+  //  }
 
-    this.effectSpeed.put("scroll", modifyEffectSpeed("scroll", status.y, status.yJustPressed, status));
-    this.effectSpeed.put("stars", modifyEffectSpeed("stars", status.b, status.bJustPressed, status));
-    this.effectSpeed.put("scope", modifyEffectSpeed("scope", status.x, status.xJustPressed, status));
-    this.effectSpeed.put("wave", modifyEffectSpeed("wave", status.a, status.aJustPressed, status));
+  //  this.effectSpeed.put("scroll", modifyEffectSpeed("scroll", status.y, status.yJustPressed, status));
+  //  this.effectSpeed.put("stars", modifyEffectSpeed("stars", status.b, status.bJustPressed, status));
+  //  this.effectSpeed.put("scope", modifyEffectSpeed("scope", status.x, status.xJustPressed, status));
+  //  this.effectSpeed.put("wave", modifyEffectSpeed("wave", status.a, status.aJustPressed, status));
 
-    if (status.lb && status.leftStickClick) {
-      float vector = -1;
-      this.amplitudeDial = int(Math.max(Math.min(this.amplitudeDial + (vector * 2), DIAL_MAX), DIAL_MIN));
-    } else if (status.leftTrigger > 0 && status.leftStickClick) {
-      float vector = status.leftTrigger;
-      this.amplitudeDial = int(Math.max(Math.min(this.amplitudeDial + (vector * 2), DIAL_MAX), DIAL_MIN));
-    } 
-  }
-  public float modifyEffectSpeed(String effectName, boolean buttonActive, boolean buttonWasActive, ControllerState status) {
-    if ( buttonActive && status.rb) {
-      float vector = 1;
-      this.toggleEffectOn(effectName);
-      return Math.max(Math.min(this.effectSpeed.get(effectName) - (vector * 2), DIAL_MAX), DIAL_MIN);
-    } else if (buttonActive && status.rightTrigger > 0) {
-      float vector = status.rightTrigger;
-      this.toggleEffectOn(effectName);
-      return Math.max(Math.min(this.effectSpeed.get(effectName) + (vector * 2), DIAL_MAX), DIAL_MIN);
+  //  if (status.lb && status.leftStickClick) {
+  //    float vector = -1;
+  //    this.amplitudeDial = int(Math.max(Math.min(this.amplitudeDial + (vector * 2), DIAL_MAX), DIAL_MIN));
+  //  } else if (status.leftTrigger > 0 && status.leftStickClick) {
+  //    float vector = status.leftTrigger;
+  //    this.amplitudeDial = int(Math.max(Math.min(this.amplitudeDial + (vector * 2), DIAL_MAX), DIAL_MIN));
+  //  } 
+  //}
+  //public float modifyEffectSpeed(String effectName, boolean buttonActive, boolean buttonWasActive, ControllerState status) {
+  //  if ( buttonActive && status.rb) {
+  //    float vector = 1;
+  //    this.toggleEffectOn(effectName);
+  //    return Math.max(Math.min(this.effectSpeed.get(effectName) - (vector * 2), DIAL_MAX), DIAL_MIN);
+  //  } else if (buttonActive && status.rightTrigger > 0) {
+  //    float vector = status.rightTrigger;
+  //    this.toggleEffectOn(effectName);
+  //    return Math.max(Math.min(this.effectSpeed.get(effectName) + (vector * 2), DIAL_MAX), DIAL_MIN);
 
-    } else if (buttonWasActive) {
-      this.toggleEffect(effectName);
-    }
-    return this.effectSpeed.get(effectName);
+  //  } else if (buttonWasActive) {
+  //    this.toggleEffect(effectName);
+  //  }
+  //  return this.effectSpeed.get(effectName);
     
-  }
+  //}
   
   public void toggleEffect(String effectName) {
     if (this.activeEffects.contains(effectName)) {
