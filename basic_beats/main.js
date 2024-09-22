@@ -1,9 +1,11 @@
 import osc from "osc";
 
 function main() {
-  const oscPort = new osc.WebSocketPort({
-    url: "ws://localhost:7766",
-    metadata: true,
+  const oscPort = new osc.UDPPort({
+    remoteAddress: "127.0.0.1",
+    remotePort: "8765"
+    // url: "ws://127.0.0.1:8765",
+    // metadata: true,
   })
   oscPort.open();
 
@@ -16,15 +18,15 @@ function main() {
         {
           address: "/tempo/beat",
           args: [
-            {type: "beat",
+            {type: "i",
               value: 1
             }]
         },
         {
           address: "/tempo/setBPM",
           args: [{
-            type: "setBPM",
-            value: 120
+            type: "f",
+            value: 120.0
           }]
         }
       ]
