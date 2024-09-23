@@ -2,38 +2,41 @@ import osc from "osc";
 
 function main() {
   const oscPort = new osc.UDPPort({
-    remoteAddress: "127.0.0.1",
+    remoteAddress: "localhost",
     remotePort: "8765"
     // url: "ws://127.0.0.1:8765",
     // metadata: true,
   })
   oscPort.open();
 
+  let timer = 1;
+
 
   function sendStatus() {
-    console.log("sending")
+    console.log(`sending ${timer}`)
     oscPort.send({
       timeTag: osc.timeTag(0),
       packets: [
         {
-          address: "/tempo/beat",
+          address: "/lx/tempo/beat",
           args: [
             {type: "i",
-              value: 1
+              value: timer
             }]
         },
         {
-          address: "/tempo/setBPM",
+          address: "/lx/tempo/setBPM",
           args: [{
-            type: "f",
+            type: "d",
             value: 120.0
           }]
         }
       ]
     })
+    timer = timer % 4 + 1
   }
 
-  setInterval(sendStatus, 3000)
+  setInterval(sendStatus, 500)
 }
 
 main()
